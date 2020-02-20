@@ -9,6 +9,8 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import com.google.android.gms.location.LocationListener;
 import android.os.Build;
@@ -22,13 +24,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private Location location;
     private TextView locationTv;
+
+    private TextView addressa,citya,statea,countrya,postalcodea,knowna;
     private GoogleApiClient googleApiClient;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private LocationRequest locationRequest;
@@ -47,6 +54,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
 
         locationTv = findViewById(R.id.location);
+
+        addressa=findViewById(R.id.address);
+        citya = findViewById(R.id.city);
+        statea = findViewById(R.id.state);
+        countrya = findViewById(R.id.country);
+        postalcodea = findViewById(R.id.postalcode);
+        knowna = findViewById(R.id.known);
         // we add permissions we need to request location of the users
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -147,6 +161,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (location != null) {
             locationTv.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
+
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(this, Locale.getDefault());
+
+            try {
+                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+
+                System.out.println(address+' '+city+' '+state+' '+country+' '+postalCode);
+                addressa.setText(address);
+                citya.setText(city);
+                statea.setText(state);
+                countrya.setText(country);
+                postalcodea.setText(postalCode);
+                knowna.setText(knownName);
+
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
         }
 
         startLocationUpdates();
@@ -218,6 +261,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
 
                 break;
+
+
+
         }
+
+
     }
 }
