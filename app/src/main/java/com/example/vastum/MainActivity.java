@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,6 +24,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Location location;
     private TextView locationTv;
 
-    private TextView addressa,citya,statea,countrya,postalcodea,knowna;
+    private TextView addressa,citya,statea,countrya,postalcodea,name,email,number;
     private GoogleApiClient googleApiClient;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private LocationRequest locationRequest;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList<>();
     private ArrayList<String> permissions = new ArrayList<>();
+    FirebaseAuth mAuth;
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
 
@@ -53,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         locationTv = findViewById(R.id.location);
 
         addressa=findViewById(R.id.address);
@@ -60,7 +66,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         statea = findViewById(R.id.state);
         countrya = findViewById(R.id.country);
         postalcodea = findViewById(R.id.postalcode);
-        knowna = findViewById(R.id.known);
+        name = findViewById(R.id.name);
+        number=findViewById(R.id.number);
+        email=findViewById(R.id.email);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+name.setText(user.getDisplayName());
+      number.setText(user.getPhoneNumber());
+    email.setText(user.getEmail());
+
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+            startActivity(new Intent(this, LoginAcitivity.class));
+        }
         // we add permissions we need to request location of the users
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -181,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 statea.setText(state);
                 countrya.setText(country);
                 postalcodea.setText(postalCode);
-                knowna.setText(knownName);
+
 
 
 
@@ -268,4 +288,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     }
+
+
 }
