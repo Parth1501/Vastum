@@ -24,6 +24,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     FirebaseAuth mAuth;
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
+    BottomNavigationView bottomNavigation;
 
 
     @Override
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         name = findViewById(R.id.name);
         number=findViewById(R.id.number);
         email=findViewById(R.id.email);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -77,7 +80,12 @@ name.setText(user.getDisplayName());
       number.setText(user.getPhoneNumber());
     email.setText(user.getEmail());
 
-        if (mAuth.getCurrentUser() == null) {
+
+
+
+
+
+            if (mAuth.getCurrentUser() == null) {
             finish();
             startActivity(new Intent(this, LoginAcitivity.class));
         }
