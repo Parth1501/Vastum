@@ -16,6 +16,7 @@ import android.location.Location;
 import com.google.android.gms.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         locationTv = findViewById(R.id.location);
 
         addressa=findViewById(R.id.address);
@@ -76,19 +75,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
-name.setText(user.getDisplayName());
-      number.setText(user.getPhoneNumber());
-    email.setText(user.getEmail());
-
-
-
-
-
-
-            if (mAuth.getCurrentUser() == null) {
-            finish();
+        if (mAuth.getCurrentUser() == null) {
             startActivity(new Intent(this, LoginAcitivity.class));
+            finish();
         }
+
+        name.setText(user.getDisplayName());
+        number.setText(user.getPhoneNumber());
+        email.setText(user.getEmail());
+
+
         // we add permissions we need to request location of the users
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -107,6 +103,23 @@ name.setText(user.getDisplayName());
                 addApi(LocationServices.API).
                 addConnectionCallbacks(this).
                 addOnConnectionFailedListener(this).build();
+
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.navigation_home:
+                        return true;
+                    case R.id.navigation_sell:
+                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                        return true;
+                    case R.id.navigation_profile:
+                        startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
@@ -210,14 +223,9 @@ name.setText(user.getDisplayName());
                 countrya.setText(country);
                 postalcodea.setText(postalCode);
 
-
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
 
         startLocationUpdates();
@@ -287,15 +295,10 @@ name.setText(user.getDisplayName());
                         googleApiClient.connect();
                     }
                 }
-
                 break;
-
-
 
         }
 
-
     }
-
 
 }
