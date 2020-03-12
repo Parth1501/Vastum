@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ProfileActivity extends AppCompatActivity {
     private Button logoutButton;
     private BottomNavigationView bottomNavigationView;
+    private TextView userName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +24,9 @@ public class ProfileActivity extends AppCompatActivity {
         logoutButton = findViewById(R.id.ProfileLogoutButton);
         bottomNavigationView = findViewById(R.id.profile_bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
+        userName = findViewById(R.id.UserName);
+
+        userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,6 +37,12 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        bottomnavigation();
+
+
+    }
+
+    private void bottomnavigation() {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

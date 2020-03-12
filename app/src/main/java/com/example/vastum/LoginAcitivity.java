@@ -1,12 +1,22 @@
 package com.example.vastum;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -14,6 +24,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -28,12 +43,13 @@ public class LoginAcitivity extends AppCompatActivity {
     //a constant for detecting the login intent result
     private static final int RC_SIGN_IN = 234;
 
+    private LocationRequest mlocationRequest;
     //Tag for the logs optional
     private static final String TAG = "simplifiedcoding";
 
+
     //creating a GoogleSignInClient object
     GoogleSignInClient mGoogleSignInClient;
-
     //And also a Firebase Auth object
     FirebaseAuth mAuth;
 
@@ -64,9 +80,12 @@ public class LoginAcitivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signIn();
+
             }
         });
     }
+
+
 
     @Override
     protected void onStart() {
@@ -98,7 +117,8 @@ public class LoginAcitivity extends AppCompatActivity {
                 //authenticating with firebase
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                Toast.makeText(LoginAcitivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                System.out.println(e.toString());
+                Toast.makeText(LoginAcitivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
