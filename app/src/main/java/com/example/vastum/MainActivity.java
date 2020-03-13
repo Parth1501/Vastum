@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private TextView name, email, number, currentLocation;
+    String str="";
     FirebaseAuth mAuth;
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
