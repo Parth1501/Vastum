@@ -49,9 +49,11 @@ public class ProfileActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.navigation_home:
                         startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         return true;
                     case R.id.navigation_sell:
-                        startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
+                        startActivity((new Intent(ProfileActivity.this, HomeActivity.class)).putExtra("Flag",1));
+                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         return true;
                     case R.id.navigation_profile:
                         return true;
@@ -60,5 +62,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void finish(){
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

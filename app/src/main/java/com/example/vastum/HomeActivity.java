@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -75,11 +76,13 @@ public class HomeActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         return true;
                     case R.id.navigation_sell:
                         return true;
                     case R.id.navigation_profile:
                         startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                         return true;
                 }
                 return false;
@@ -87,6 +90,16 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void finish() {
+        super.finish();
 
+        if(getIntent().getIntExtra("Flag",0)==0){
+            overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        }
+        else{
+            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+        }
+    }
 }
 

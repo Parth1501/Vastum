@@ -128,10 +128,12 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_home:
                         return true;
                     case R.id.navigation_sell:
-                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                        startActivity((new Intent(MainActivity.this, HomeActivity.class)).putExtra("Flag",0));
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                         return true;
                     case R.id.navigation_profile:
                         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                         return true;
                 }
                 return false;
@@ -244,6 +246,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         stopLocationUpdates();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
 }
 
