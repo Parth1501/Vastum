@@ -36,12 +36,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginAcitivity extends AppCompatActivity {
 
 
     //a constant for detecting the login intent result
     private static final int RC_SIGN_IN = 234;
+    FirebaseDatabase mdatabase;
+    DatabaseReference dbref;
 
     private LocationRequest mlocationRequest;
     //Tag for the logs optional
@@ -58,6 +62,8 @@ public class LoginAcitivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_acitivity);
 
+        mdatabase = FirebaseDatabase.getInstance();
+        dbref = mdatabase.getReference();
 
         //first we intialized the FirebaseAuth object
         mAuth = FirebaseAuth.getInstance();
@@ -97,6 +103,7 @@ public class LoginAcitivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null) {
             finish();
             startActivity(new Intent(this, MainActivity.class));
+
         }
     }
 
@@ -139,6 +146,9 @@ public class LoginAcitivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             Toast.makeText(LoginAcitivity.this, user.getDisplayName() +"User Signed In", Toast.LENGTH_SHORT).show();
+                            dbref = mdatabase.getReference("/users");
+                            dbref.setValue(mAuth.getCurrentUser().getUid());
+
                             Intent myIntent = new Intent(LoginAcitivity.this, MainActivity.class);
                             startActivity(myIntent);
                             finish();

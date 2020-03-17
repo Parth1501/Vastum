@@ -20,12 +20,22 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements sellPointsDialog.sellPointsListener {
 
@@ -39,6 +49,8 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
     private static final int Image_Capture_Code = 1;
     private int getIntentKey;
     private CardView buttonCard;
+    private Spinner category,brand,type,age;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +60,14 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
 
         imgCapture = findViewById(R.id.imageView);
         buttonCard = findViewById(R.id.buttonCard);
+        category = findViewById(R.id.itemCategoryDropDown);
+        brand = findViewById(R.id.itemBrandDropDown);
+        type = findViewById(R.id.itemTypeDropDown);
+        age=findViewById(R.id.itemAgeDropDown);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("/Category");
+        spinnerfillup();
+
         bottomnavigation();
 
 
@@ -66,6 +86,122 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
 //        camera();
 
     }
+
+    private void spinnerfillup() {
+
+        Query databsase1 = FirebaseDatabase.getInstance().getReference("Category/Refrigerator/Old");
+        databsase1.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                // System.out.println(dataSnapshot.child("Television").getChildrenCount());
+                                                final List<String> items = new ArrayList<String>();
+
+                                                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                                                    String itemName = itemSnapshot.getKey();
+                                                    items.add(itemName);
+                                                }
+                                                java.util.Collections.sort(items);
+                                                final ArrayAdapter<String> itemAdapter = new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_spinner_item, items);
+                                                itemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                age.setAdapter(itemAdapter);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+            });
+
+
+                Query databsase = FirebaseDatabase.getInstance().getReference("Category");
+        databsase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               // System.out.println(dataSnapshot.child("Television").getChildrenCount());
+                final List<String> items = new ArrayList<String>();
+
+                for (DataSnapshot itemSnapshot: dataSnapshot.getChildren()) {
+                    String itemName = itemSnapshot.getKey();
+                    items.add(itemName);
+                }
+                java.util.Collections.sort(items);
+                final ArrayAdapter<String> itemAdapter = new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_spinner_item, items);
+                itemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                category.setAdapter(itemAdapter);
+
+                category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String selected = items.get(i);
+
+                    mDatabase.child(selected).child("Brand").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            final List<String> items = new ArrayList<String>();
+
+                            for (DataSnapshot itemSnapshot: dataSnapshot.getChildren()) {
+                                String itemName = itemSnapshot.getKey();
+                                items.add(itemName);
+                            }
+                            java.util.Collections.sort(items);
+                            ArrayAdapter<String> itemAdapter = new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_spinner_item, items);
+                            itemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            brand.setAdapter(itemAdapter);
+
+                        }
+
+
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                        mDatabase.child(selected).child("Type").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                final List<String> items = new ArrayList<String>();
+
+                                for (DataSnapshot itemSnapshot: dataSnapshot.getChildren()) {
+                                    String itemName = itemSnapshot.getKey();
+                                    System.out.println(itemName);
+                                    items.add(itemName);
+                                }
+                                java.util.Collections.sort(items);
+                                ArrayAdapter<String> itemAdapter = new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_spinner_item, items);
+                                itemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                type.setAdapter(itemAdapter);
+
+                            }
+
+
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
+
 
     private void showPoints(){
         sellPointsDialog sellPointsDialog= new sellPointsDialog();

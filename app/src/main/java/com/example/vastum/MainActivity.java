@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 for (Location location : locationResult.getLocations()) {
                     if (getApplicationContext() != null) {
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        System.out.println(latLng);
+                        //System.out.println(latLng);
 
                         Geocoder myLocation = new Geocoder(getApplicationContext(), Locale.getDefault());
                         try {
