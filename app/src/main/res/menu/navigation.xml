@@ -9,7 +9,13 @@
         android:icon="@drawable/ic_attach_money_black_24dp"
         android:title="Sell" />
     <item
+        android:id="@+id/navigation_redeem"
+        android:title="Redeem"
+        android:icon="@drawable/ic_card_giftcard_black_24dp"
+        />
+    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_person_black_24dp"
         android:title="Profile" />
+
 </menu>

@@ -17,10 +17,14 @@ public class ProfileActivity extends AppCompatActivity {
     private Button logoutButton;
     private BottomNavigationView bottomNavigationView;
     private TextView userName;
+    int getIntentKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        getIntentKey = getIntent().getIntExtra("Flag",0);
+
         logoutButton = findViewById(R.id.ProfileLogoutButton);
         bottomNavigationView = findViewById(R.id.profile_bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
@@ -48,13 +52,16 @@ public class ProfileActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.navigation_home:
-                        startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+                        startActivity((new Intent(ProfileActivity.this,MainActivity.class)).putExtra("Flag",3));
                         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         return true;
                     case R.id.navigation_sell:
-                        startActivity((new Intent(ProfileActivity.this, HomeActivity.class)).putExtra("Flag",1));
+                        startActivity((new Intent(ProfileActivity.this, HomeActivity.class)).putExtra("Flag",3));
                         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         return true;
+                    case R.id.navigation_redeem:
+                        startActivity((new Intent(ProfileActivity.this,RedeemActivity.class)).putExtra("Flag",3));
+                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                     case R.id.navigation_profile:
                         return true;
                 }
@@ -67,5 +74,15 @@ public class ProfileActivity extends AppCompatActivity {
     public void finish(){
         super.finish();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+
+//        if(getIntentKey==1){
+//            bottomNavigationView.setSelectedItemId(R.id.navigation_sell);
+//        }
+//        else if(getIntentKey==2){
+//            bottomNavigationView.setSelectedItemId(R.id.navigation_redeem);
+//        }
+//        else if(getIntentKey==0){
+//            bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+//        }
     }
 }

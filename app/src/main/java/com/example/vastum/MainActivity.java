@@ -46,7 +46,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    int getIntentKey;
     private TextView name, email, number, currentLocation;
     String str="";
     FirebaseAuth mAuth;
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getIntentKey = getIntent().getIntExtra("Flag",0);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bottomnavigation() {
+        bottomNavigation.setSelectedItemId(R.id.navigation_home);
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -131,10 +133,15 @@ public class MainActivity extends AppCompatActivity {
                         startActivity((new Intent(MainActivity.this, HomeActivity.class)).putExtra("Flag",0));
                         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                         return true;
-                    case R.id.navigation_profile:
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    case R.id.navigation_redeem:
+                        startActivity((new Intent(MainActivity.this, RedeemActivity.class)).putExtra("Flag",0));
                         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                         return true;
+                    case R.id.navigation_profile:
+                        startActivity((new Intent(MainActivity.this, ProfileActivity.class)).putExtra("Flag",0));
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                        return true;
+
                 }
                 return false;
             }
@@ -252,6 +259,17 @@ public class MainActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+
+//        if(getIntentKey==1){
+//            bottomNavigation.setSelectedItemId(R.id.navigation_sell);
+//        }
+//        else if(getIntentKey==2){
+//            bottomNavigation.setSelectedItemId(R.id.navigation_redeem);
+//        }
+//        else if(getIntentKey==3){
+//            bottomNavigation.setSelectedItemId(R.id.navigation_profile);
+//        }
+
     }
 }
 

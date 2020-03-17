@@ -3,6 +3,7 @@ package com.example.vastum;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,7 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements sellPointsDialog.sellPointsListener {
 
 
     private BottomNavigationView bottomNavigationView;
@@ -35,18 +37,40 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private ImageView imgCapture;
     private static final int Image_Capture_Code = 1;
+    private int getIntentKey;
+    private CardView buttonCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getIntentKey = getIntent().getIntExtra("Flag",0);
 
         imgCapture = findViewById(R.id.imageView);
+        buttonCard = findViewById(R.id.buttonCard);
         bottomnavigation();
 
 
-        camera();
+        imgCapture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                camera();
+            }
+        });
+        buttonCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPoints();
+            }
+        });
+//        camera();
 
+    }
+
+    private void showPoints(){
+        sellPointsDialog sellPointsDialog= new sellPointsDialog();
+        sellPointsDialog.setPoints("1000");
+        sellPointsDialog.show(getSupportFragmentManager(),"sellPointsDialog");
     }
 
     private void camera() {
@@ -75,15 +99,20 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                        startActivity((new Intent(HomeActivity.this, MainActivity.class)).putExtra("Flag",1));
                         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         return true;
                     case R.id.navigation_sell:
                         return true;
-                    case R.id.navigation_profile:
-                        startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                    case R.id.navigation_redeem:
+                        startActivity((new Intent(HomeActivity.this, RedeemActivity.class)).putExtra("Flag",1));
                         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                         return true;
+                    case R.id.navigation_profile:
+                        startActivity((new Intent(HomeActivity.this, ProfileActivity.class)).putExtra("Flag",1));
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                        return true;
+
                 }
                 return false;
             }
@@ -94,12 +123,25 @@ public class HomeActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
 
-        if(getIntent().getIntExtra("Flag",0)==0){
+        if(getIntentKey==0){
             overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+//            bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         }
         else{
             overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+//            if(getIntentKey==2){
+//                bottomNavigationView.setSelectedItemId(R.id.navigation_redeem);
+//            }
+//            else if(getIntentKey==3){
+//                bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
+//            }
         }
+
+    }
+
+    @Override
+    public void sellSuccessful() {
+        //we will pass product info in future.
     }
 }
 
