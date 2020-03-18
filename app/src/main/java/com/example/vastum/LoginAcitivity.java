@@ -164,7 +164,7 @@ public class LoginAcitivity extends AppCompatActivity {
                                         }
                                     }
                                     if(flag==0){
-                                        dbUser.push().setValue(new usersInfo());
+                                        dbUser.push().setValue(new usersInfo(mAuth.getCurrentUser().getUid()));
                                     }
                                 }
 
