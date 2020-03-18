@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".RedeemActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/redeem_recycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/redeem_bottom_navigation"
+        />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/redeem_bottom_navigation"
         android:layout_width="match_parent"
