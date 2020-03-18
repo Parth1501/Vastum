@@ -151,7 +151,9 @@ public class LoginAcitivity extends AppCompatActivity {
 
                             Toast.makeText(LoginAcitivity.this, user.getDisplayName() +"User Signed In", Toast.LENGTH_SHORT).show();
                             dbref = mdatabase.getReference("/users");
+                            System.out.println(dbref.toString());
                             dbref.setValue(mAuth.getCurrentUser().getUid());
+
 
                             dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                 int flag=0;
@@ -160,10 +162,13 @@ public class LoginAcitivity extends AppCompatActivity {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()){
                                         if(ds.child("userID").getValue().toString().equals(mAuth.getCurrentUser().getUid())){
                                            flag=1;
-                                            break;
+                                            System.out.println(1);
+                                           break;
+
                                         }
                                     }
                                     if(flag==0){
+                                        System.out.println(0);
                                         dbUser.push().setValue(new usersInfo(mAuth.getCurrentUser().getUid()));
                                     }
                                 }

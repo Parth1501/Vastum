@@ -1,6 +1,7 @@
 package com.example.vastum;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,9 +24,12 @@ import com.google.android.gms.location.LocationCallback;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -57,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationCallback mLocationCallback;
     private LocationRequest mlocationRequest;
 
+
     ArrayList<ProductsSectionsModel> allSampleData;
 
     @Override
@@ -68,9 +74,16 @@ public class MainActivity extends AppCompatActivity {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         bottomNavigation = findViewById(R.id.bottom_navigation);
-        currentLocation = findViewById(R.id.currentLocation);
+        currentLocation = findViewById(R.id.Location);
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
+
+
+        androidx.appcompat.widget.Toolbar  toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
 
         allSampleData = new ArrayList<ProductsSectionsModel>();
 
