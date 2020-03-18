@@ -4,20 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,7 +34,7 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
 
     private BottomNavigationView bottomNavigationView;
     private RecyclerView recyclerView;
-    private ArrayList<TV_TVPart_demo> tvPartList;
+    private ArrayList<ProductsInfo> tvPartList;
     private TVitemAdapter tvitemAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private ImageView imgCapture;

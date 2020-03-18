@@ -1,15 +1,15 @@
 package com.example.vastum;
 
-public class TV_TVPart_demo {
+public class ProductsInfo {
     private String Name;
     private int imageResource;
 
-    public TV_TVPart_demo(String name, int imageResource) {
+    public ProductsInfo(String name, int imageResource) {
         Name = name;
         this.imageResource = imageResource;
     }
 
-    public TV_TVPart_demo() {
+    public ProductsInfo() {
     }
 
     public String getName() {

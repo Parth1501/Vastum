@@ -36,8 +36,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginAcitivity extends AppCompatActivity {
 
@@ -45,7 +48,7 @@ public class LoginAcitivity extends AppCompatActivity {
     //a constant for detecting the login intent result
     private static final int RC_SIGN_IN = 234;
     FirebaseDatabase mdatabase;
-    DatabaseReference dbref;
+    DatabaseReference dbref,dbUser;
 
     private LocationRequest mlocationRequest;
     //Tag for the logs optional
@@ -64,6 +67,7 @@ public class LoginAcitivity extends AppCompatActivity {
 
         mdatabase = FirebaseDatabase.getInstance();
         dbref = mdatabase.getReference();
+        dbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
 
         //first we intialized the FirebaseAuth object
         mAuth = FirebaseAuth.getInstance();
@@ -148,6 +152,27 @@ public class LoginAcitivity extends AppCompatActivity {
                             Toast.makeText(LoginAcitivity.this, user.getDisplayName() +"User Signed In", Toast.LENGTH_SHORT).show();
                             dbref = mdatabase.getReference("/users");
                             dbref.setValue(mAuth.getCurrentUser().getUid());
+
+                            dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                                int flag=0;
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()){
+                                        if(ds.child("userID").getValue().toString().equals(mAuth.getCurrentUser().getUid())){
+                                           flag=1;
+                                            break;
+                                        }
+                                    }
+                                    if(flag==0){
+                                        dbUser.push().setValue(new usersInfo());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.e("Error",databaseError.getMessage()) ;
+                                }
+                            });
 
                             Intent myIntent = new Intent(LoginAcitivity.this, MainActivity.class);
                             startActivity(myIntent);

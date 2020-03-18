@@ -1,7 +1,6 @@
 package com.example.vastum;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -17,10 +16,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -28,9 +26,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
@@ -56,15 +51,13 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
 
     //recycler view
-    private RecyclerView recyclerView;
-    private ArrayList<TV_TVPart_demo> tvPartList;
-    private TVitemAdapter tvitemAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private ArrayList<ProductsInfo> tvPartList;
 
     //creating a GoogleSignInClient object;
     private LocationCallback mLocationCallback;
     private LocationRequest mlocationRequest;
 
+    ArrayList<ProductsSectionsModel> allSampleData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
+        allSampleData = new ArrayList<ProductsSectionsModel>();
 
         if (mAuth.getCurrentUser() == null) {
             startActivity(new Intent(this, LoginAcitivity.class));
@@ -94,30 +88,38 @@ public class MainActivity extends AppCompatActivity {
         BuildRecyclerView();
     }
 
+    public void createDummyData() {
+
+    }
+
     private void CreateList() {
-        tvPartList = new ArrayList<>();
-        tvPartList.add(new TV_TVPart_demo("WHERE IT IS", R.drawable.logo));
-        tvPartList.add(new TV_TVPart_demo("HERE IT IS", R.drawable.monitor));
-        tvPartList.add(new TV_TVPart_demo("WHERE IT IS", R.drawable.logo));
-        tvPartList.add(new TV_TVPart_demo("HERE IT IS", R.drawable.monitor));
-        tvPartList.add(new TV_TVPart_demo("WHERE IT IS", R.drawable.logo));
-        tvPartList.add(new TV_TVPart_demo("HERE IT IS", R.drawable.monitor));
+        for (int i = 1; i <= 3; i++) {
+
+            ProductsSectionsModel dm = new ProductsSectionsModel();
+
+            dm.setHeaderTitle("Section " + i);
+
+            tvPartList = new ArrayList<>();
+            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
+            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
+            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
+            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
+            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
+            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
+
+            dm.setAllItemsInSection(tvPartList);
+
+            allSampleData.add(dm);
+
+        }
     }
 
     private void BuildRecyclerView() {
-        recyclerView = findViewById(R.id.RecyclerTV);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        tvitemAdapter = new TVitemAdapter(tvPartList);
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(tvitemAdapter);
-        tvitemAdapter.setOnItemClickListener(new TVitemAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-
-            }
-        });
+        RecyclerView my_recycler_view = (RecyclerView) findViewById(R.id.RecyclerItems);
+        my_recycler_view.setHasFixedSize(true);
+        HomeRecyclerAdapter adapter = new HomeRecyclerAdapter( allSampleData,this);
+        my_recycler_view.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        my_recycler_view.setAdapter(adapter);
 
     }
 

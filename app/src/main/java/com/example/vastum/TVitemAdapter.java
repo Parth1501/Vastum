@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHolder> {
 
-    private ArrayList<TV_TVPart_demo> mList;
+    private ArrayList<ProductsInfo> mList;
     private OnItemClickListener mListener;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -30,7 +30,7 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
 
     @Override
     public void onBindViewHolder(@NonNull itemViewHolder holder, int position) {
-        TV_TVPart_demo currentItem = mList.get(position);
+        ProductsInfo currentItem = mList.get(position);
         holder.imageView.setImageResource(currentItem.getImageResource());
         holder.textView1.setText(currentItem.getName());
     }
@@ -66,7 +66,7 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
             });
         }
     }
-    public TVitemAdapter(ArrayList<TV_TVPart_demo> itemList){
+    public TVitemAdapter(ArrayList<ProductsInfo> itemList){
         mList  = itemList;
     }
 
