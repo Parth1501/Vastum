@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ALL_PERMISSIONS_RESULT = 1011;
     BottomNavigationView bottomNavigation;
     private FusedLocationProviderClient mFusedLocationClient;
-
+    private RelativeLayout relativeLayout;
     //recycler view
     private ArrayList<ProductsInfo> tvPartList;
 
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationCallback mLocationCallback;
     private LocationRequest mlocationRequest;
 
-
+    RecyclerView my_recycler_view;
     ArrayList<ProductsSectionsModel> allSampleData;
 
     @Override
@@ -70,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         currentLocation = findViewById(R.id.Location);
-
+        relativeLayout = findViewById(R.id.relativeMain);
+        my_recycler_view = (RecyclerView) findViewById(R.id.RecyclerItems);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -87,6 +89,23 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
+        my_recycler_view.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
+            public void onSwipeTop() {
+//                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeRight() {
+//                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeLeft() {
+                startActivity((new Intent(MainActivity.this, HomeActivity.class)).putExtra("Flag",0));
+                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+//                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeBottom() {
+//                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
+            }
+
+        });
 
         location();
 
@@ -96,9 +115,6 @@ public class MainActivity extends AppCompatActivity {
         BuildRecyclerView();
     }
 
-    public void createDummyData() {
-
-    }
 
     private void CreateList() {
         for (int i = 1; i <= 3; i++) {
@@ -123,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void BuildRecyclerView() {
-        RecyclerView my_recycler_view = (RecyclerView) findViewById(R.id.RecyclerItems);
+
         my_recycler_view.setHasFixedSize(true);
         ProductsSectionAdapter adapter = new ProductsSectionAdapter( allSampleData,this);
         my_recycler_view.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

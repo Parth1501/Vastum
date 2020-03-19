@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
@@ -31,12 +32,16 @@ public class RedeemActivity extends AppCompatActivity {
     List<Integer> points;
     ReedemAdapter mAdapter;
     DatabaseReference ref;
+    private RelativeLayout relativeLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_redeem);
         recycle = findViewById(R.id.redeem_recycle);
         recycle.setLayoutManager(new LinearLayoutManager(this));
+        relativeLayout = findViewById(R.id.redeemRelative);
+
         voucher_name = new ArrayList<>();
 
         points = new ArrayList<>();
@@ -45,6 +50,26 @@ public class RedeemActivity extends AppCompatActivity {
         bottomnavigation();
         setRedemLayout();
 
+
+        recycle.setOnTouchListener(new OnSwipeTouchListener(RedeemActivity.this){
+            public void onSwipeTop() {
+//                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeRight() {
+                startActivity((new Intent(RedeemActivity.this, HomeActivity.class)).putExtra("Flag",1));
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+//                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeLeft() {
+                startActivity((new Intent(RedeemActivity.this, ProfileActivity.class)).putExtra("Flag",0));
+                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+//                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeBottom() {
+//                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
 

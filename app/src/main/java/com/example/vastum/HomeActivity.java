@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
     private CardView buttonCard;
     private Spinner category,brand,type,age;
     private DatabaseReference mDatabase;
-
+    private RelativeLayout relativeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +57,7 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
         brand = findViewById(R.id.itemBrandDropDown);
         type = findViewById(R.id.itemTypeDropDown);
         age=findViewById(R.id.itemAgeDropDown);
+        relativeLayout = findViewById(R.id.homeRelative);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("/Category");
         spinnerfillup();
@@ -76,7 +78,25 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
             }
         });
 //        camera();
+        relativeLayout.setOnTouchListener(new OnSwipeTouchListener(HomeActivity.this){
+            public void onSwipeTop() {
+//                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeRight() {
+                startActivity((new Intent(HomeActivity.this, MainActivity.class)).putExtra("Flag",1));
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+//                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeLeft() {
+                startActivity((new Intent(HomeActivity.this, RedeemActivity.class)).putExtra("Flag",0));
+                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+//                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeBottom() {
+//                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
+            }
 
+        });
     }
 
     private void spinnerfillup() {

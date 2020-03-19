@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -17,6 +18,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Button logoutButton;
     private BottomNavigationView bottomNavigationView;
     private TextView userName;
+    private RelativeLayout relativeLayout;
     int getIntentKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.profile_bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
         userName = findViewById(R.id.UserName);
+        relativeLayout= findViewById(R.id.profileRelative);
 
         userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
@@ -43,7 +46,23 @@ public class ProfileActivity extends AppCompatActivity {
 
         bottomnavigation();
 
+        relativeLayout.setOnTouchListener(new OnSwipeTouchListener(ProfileActivity.this){
+            public void onSwipeTop() {
+//                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeRight() {
+                startActivity((new Intent(ProfileActivity.this, RedeemActivity.class)).putExtra("Flag",1));
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+//                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeLeft() {
+//                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeBottom() {
+//                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
+            }
 
+        });
     }
 
     private void bottomnavigation() {
