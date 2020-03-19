@@ -23,7 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        getIntentKey = getIntent().getIntExtra("Flag",0);
+        getIntentKey = getIntent().getIntExtra("Flag",10);
 
         logoutButton = findViewById(R.id.ProfileLogoutButton);
         bottomNavigationView = findViewById(R.id.profile_bottom_navigation);
@@ -70,9 +70,17 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
-    public void finish(){
-        super.finish();
+    protected void onResume() {
+        super.onResume();
+
+        bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
 
 //        if(getIntentKey==1){
@@ -84,5 +92,6 @@ public class ProfileActivity extends AppCompatActivity {
 //        else if(getIntentKey==0){
 //            bottomNavigationView.setSelectedItemId(R.id.navigation_home);
 //        }
+
     }
 }

@@ -1,7 +1,6 @@
 package com.example.vastum;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,12 +22,9 @@ import com.google.android.gms.location.LocationCallback;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -70,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getIntentKey = getIntent().getIntExtra("Flag",0);
+        getIntentKey = getIntent().getIntExtra("Flag",10);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -130,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     private void BuildRecyclerView() {
         RecyclerView my_recycler_view = (RecyclerView) findViewById(R.id.RecyclerItems);
         my_recycler_view.setHasFixedSize(true);
-        HomeRecyclerAdapter adapter = new HomeRecyclerAdapter( allSampleData,this);
+        ProductsSectionAdapter adapter = new ProductsSectionAdapter( allSampleData,this);
         my_recycler_view.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         my_recycler_view.setAdapter(adapter);
 
@@ -258,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         {    startLocationUpdates();
         }
+        bottomNavigation.setSelectedItemId(R.id.navigation_home);
     }
 
     private void startLocationUpdates() {
@@ -271,8 +267,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    public void onBackPressed() {
+        super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
 
 //        if(getIntentKey==1){

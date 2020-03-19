@@ -41,7 +41,7 @@ public class RedeemActivity extends AppCompatActivity {
 
         points = new ArrayList<>();
 
-        getIntentKey = getIntent().getIntExtra("Flag", 0);
+        getIntentKey = getIntent().getIntExtra("Flag", 10);
         bottomnavigation();
         setRedemLayout();
 
@@ -75,7 +75,7 @@ public class RedeemActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                                //ENTER YOUR DATABASE RELETEAD CODE HERE
+                                //ENTER YOUR DATABASE RELATED CODE HERE
 
 
                             }
@@ -92,6 +92,13 @@ public class RedeemActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        bottomNavigationView.setSelectedItemId(R.id.navigation_redeem);
     }
 
     private void bottomnavigation() {
@@ -122,8 +129,8 @@ public class RedeemActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    public void onBackPressed() {
+        super.onBackPressed();
 
         if (getIntent().getIntExtra("Flag", 0) == 3) {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

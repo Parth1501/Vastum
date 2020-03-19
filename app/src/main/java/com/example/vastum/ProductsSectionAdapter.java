@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.ItemRowHolder> {
+public class ProductsSectionAdapter extends RecyclerView.Adapter<ProductsSectionAdapter.ItemRowHolder> {
 
 
     private ArrayList<ProductsSectionsModel> dataList;
@@ -27,7 +27,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         return mh;
     }
 
-    public HomeRecyclerAdapter(ArrayList<ProductsSectionsModel> dataList, Context mContext) {
+    public ProductsSectionAdapter(ArrayList<ProductsSectionsModel> dataList, Context mContext) {
         this.dataList = dataList;
         this.mContext = mContext;
     }

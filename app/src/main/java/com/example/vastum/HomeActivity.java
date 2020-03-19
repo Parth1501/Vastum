@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        getIntentKey = getIntent().getIntExtra("Flag",0);
+        getIntentKey = getIntent().getIntExtra("Flag",10);
 
         imgCapture = findViewById(R.id.imageView);
         buttonCard = findViewById(R.id.buttonCard);
@@ -103,7 +103,6 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
 
                                             }
             });
-
 
                 Query databsase = FirebaseDatabase.getInstance().getReference("Category");
         databsase.addValueEventListener(new ValueEventListener() {
@@ -194,11 +193,21 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        bottomNavigationView.setSelectedItemId(R.id.navigation_sell);
+    }
 
     private void showPoints(){
         sellPointsDialog sellPointsDialog= new sellPointsDialog();
-        sellPointsDialog.setPoints("1000");
+        sellPointsDialog.setPoints(checkPoints());
         sellPointsDialog.show(getSupportFragmentManager(),"sellPointsDialog");
+    }
+
+    private String checkPoints(){
+        return "1000";
     }
 
     private void camera() {
@@ -248,8 +257,8 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    public void onBackPressed() {
+        super.onBackPressed();
 
         if(getIntentKey==0){
             overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
@@ -264,8 +273,8 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
 //                bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
 //            }
         }
-
     }
+
 
     @Override
     public void sellSuccessful() {
