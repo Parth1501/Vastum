@@ -44,6 +44,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        androidx.appcompat.widget.Toolbar  toolbar = findViewById(R.id.toolbar);
+        TextView location = findViewById(R.id.Location);
+        TextView vastum = findViewById(R.id.vastum);
+        toolbar.setTitle("");
+        location.setText("");
+        location.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        setSupportActionBar(toolbar);
+
         bottomnavigation();
 
         relativeLayout.setOnTouchListener(new OnSwipeTouchListener(ProfileActivity.this){

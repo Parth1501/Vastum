@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -58,6 +60,15 @@ public class HomeActivity extends AppCompatActivity implements sellPointsDialog.
         type = findViewById(R.id.itemTypeDropDown);
         age=findViewById(R.id.itemAgeDropDown);
         relativeLayout = findViewById(R.id.homeRelative);
+
+
+        androidx.appcompat.widget.Toolbar  toolbar = findViewById(R.id.toolbar);
+        TextView location = findViewById(R.id.Location);
+        TextView vastum = findViewById(R.id.vastum);
+        toolbar.setTitle("");
+        location.setText("");
+        location.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        setSupportActionBar(toolbar);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("/Category");
         spinnerfillup();

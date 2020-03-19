@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -69,6 +70,13 @@ public class LoginAcitivity extends AppCompatActivity {
         dbref = mdatabase.getReference();
         dbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
 
+        androidx.appcompat.widget.Toolbar  toolbar = findViewById(R.id.toolbar);
+        TextView location = findViewById(R.id.Location);
+        TextView vastum = findViewById(R.id.vastum);
+        toolbar.setTitle("");
+        location.setText("");
+        location.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        setSupportActionBar(toolbar);
         //first we intialized the FirebaseAuth object
         mAuth = FirebaseAuth.getInstance();
 

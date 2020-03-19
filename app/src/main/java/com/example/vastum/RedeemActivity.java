@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
@@ -49,6 +50,14 @@ public class RedeemActivity extends AppCompatActivity {
         getIntentKey = getIntent().getIntExtra("Flag", 10);
         bottomnavigation();
         setRedemLayout();
+
+        androidx.appcompat.widget.Toolbar  toolbar = findViewById(R.id.toolbar);
+        TextView location = findViewById(R.id.Location);
+        TextView vastum = findViewById(R.id.vastum);
+        toolbar.setTitle("");
+        location.setText("");
+        location.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        setSupportActionBar(toolbar);
 
 
         recycle.setOnTouchListener(new OnSwipeTouchListener(RedeemActivity.this){
