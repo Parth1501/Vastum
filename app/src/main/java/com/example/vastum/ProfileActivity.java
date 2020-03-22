@@ -24,7 +24,6 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
         getIntentKey = getIntent().getIntExtra("Flag",10);
 
         logoutButton = findViewById(R.id.ProfileLogoutButton);
@@ -38,8 +37,10 @@ public class ProfileActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(ProfileActivity.this, LoginAcitivity.class));
+                //FirebaseAuth.getInstance().signOut();
+                //startActivity(new Intent(ProfileActivity.this, LoginAcitivity.class));
+                //finish();
+                startActivity(new Intent(ProfileActivity.this,Main2Activity.class));
                 finish();
             }
         });
@@ -59,7 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
             }
             public void onSwipeRight() {
-                startActivity((new Intent(ProfileActivity.this, RedeemActivity.class)).putExtra("Flag",1));
+                startActivity((new Intent(ProfileActivity.this, RedeemActivity.class)).putExtra("Flag",3));
                 overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
 //                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
             }

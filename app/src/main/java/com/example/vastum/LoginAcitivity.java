@@ -214,5 +214,10 @@ public class LoginAcitivity extends AppCompatActivity {
         //starting the activity for result
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(LoginAcitivity.this,MainActivity.class));
+    }
 }
 

@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-public class sellPointsDialog extends AppCompatDialogFragment {
+public class sellPointsDialog extends AppCompatDialogFragment  {
     private TextView textPoints;
     private String points;
 

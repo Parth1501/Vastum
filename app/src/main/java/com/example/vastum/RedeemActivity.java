@@ -166,7 +166,9 @@ public class RedeemActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (getIntent().getIntExtra("Flag", 0) == 3) {
+        System.out.println(getIntent().getIntExtra("Flag",10));
+        if (getIntent().getIntExtra("Flag",10) == 3)
+        {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 //            bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
         } else {

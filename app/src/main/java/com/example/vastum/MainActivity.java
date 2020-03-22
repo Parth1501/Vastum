@@ -89,9 +89,12 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
+
+
         my_recycler_view.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
             public void onSwipeTop() {
 //                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+
             }
             public void onSwipeRight() {
 //                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
@@ -102,12 +105,14 @@ public class MainActivity extends AppCompatActivity {
 //                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
             }
             public void onSwipeBottom() {
+
 //                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
             }
 
         });
 
         location();
+
 
 
         bottomnavigation();
