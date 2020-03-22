@@ -21,8 +21,8 @@
     <fragment
         android:id="@+id/fragment2"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="479dp"
-        android:layout_height="680dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="58dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@+id/nav"
@@ -37,6 +37,7 @@
         android:id="@+id/nav"
         android:layout_width="match_parent"
         android:layout_height="64dp"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

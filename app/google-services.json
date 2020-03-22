@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "524400177286-v86pbcs9o9co30idons1av5iecklfold.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.vastum",
-            "certificate_hash": "e4771a117dcd2b269dc49426cc3bdb6c7266fd59"
-          }
-        },
-        {
           "client_id": "524400177286-o1r4tei485ljfsqa9imkd8rdbjcua9ol.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
