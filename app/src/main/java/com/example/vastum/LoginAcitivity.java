@@ -114,7 +114,7 @@ public class LoginAcitivity extends AppCompatActivity {
         //and take the user to profile activity
         if (mAuth.getCurrentUser() != null) {
             finish();
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, Main2Activity.class));
 
         }
     }
@@ -187,7 +187,7 @@ public class LoginAcitivity extends AppCompatActivity {
                                 }
                             });
 
-                            Intent myIntent = new Intent(LoginAcitivity.this, MainActivity.class);
+                            Intent myIntent = new Intent(LoginAcitivity.this, Main2Activity.class);
                             startActivity(myIntent);
                             finish();
 
@@ -217,7 +217,7 @@ public class LoginAcitivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(LoginAcitivity.this,MainActivity.class));
+        startActivity(new Intent(LoginAcitivity.this,Main2Activity.class));
     }
 }
 
