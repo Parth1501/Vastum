@@ -6,12 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +24,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,9 +53,9 @@ public class Main2Activity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private LocationRequest mlocationRequest;
-
+    Fragment active,fr1,fr2,fr3,fr4;
     BottomNavigationView bnv;
-
+    FragmentManager fm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,12 +81,52 @@ public class Main2Activity extends AppCompatActivity {
 
         bnv = findViewById(R.id.nav);
 
-        AppBarConfiguration abc = new AppBarConfiguration.Builder(
+        //to handle navigation by android itself : it will create new fragment every time old values will be destroyed
+        /*AppBarConfiguration abc = new AppBarConfiguration.Builder(
                 R.id.home, R.id.sell, R.id.redeem, R.id.profile
         ).build();
         NavController navc = Navigation.findNavController(this, R.id.fragment2);
         NavigationUI.setupActionBarWithNavController(this, navc, abc);
         NavigationUI.setupWithNavController(bnv, navc);
+        */
+
+        //to customly resume fragments after events like backpress or change fragment
+        fr1=new home();
+        fr2=new sell();
+        fr3=new redeem();
+        fr4=new profile();
+        active=fr1;
+        fm=getSupportFragmentManager();
+
+        fm.beginTransaction().add(R.id.main_cont,fr2,"2").hide(fr2).commit();
+        fm.beginTransaction().add(R.id.main_cont,fr3,"3").hide(fr3).commit();
+        fm.beginTransaction().add(R.id.main_cont,fr4,"4").hide(fr4).commit();
+        fm.beginTransaction().add(R.id.main_cont,fr1,"1").commit();
+
+        bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.home:
+                        fm.beginTransaction().hide(active).show(fr1).commit();
+                        active=fr1;
+                        return true;
+                    case R.id.sell:
+                        fm.beginTransaction().hide(active).show(fr2).commit();
+                        active=fr2;
+                        return true;
+                    case R.id.redeem:
+                        fm.beginTransaction().hide(active).show(fr3).commit();
+                        active=fr3;
+                        return true;
+                    case R.id.profile:
+                        fm.beginTransaction().hide(active).show(fr4).commit();
+                        active=fr4;
+                        return true;
+                }
+                return false;
+            }
+        });
 
         location();
 

@@ -21,10 +21,16 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Main2Activity"
             android:label=""
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:launchMode="singleTop"><intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter></activity>
+        <!-- we dont need that here
         <activity android:name=".RedeemActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".HomeActivity" /> -->
         <activity android:name=".LoginAcitivity" />
         <activity
             android:name=".SplashScreen"
@@ -35,15 +41,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- we dont need that here
         <activity
             android:name=".MainActivity"
             android:theme="@style/MainActivityTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        </activity> -->
     </application>
 
 </manifest>
