@@ -30,6 +30,7 @@
         android:layout_height="match_parent"
         android:id="@+id/viewpager_id">
 
+
     </androidx.viewpager.widget.ViewPager>
 
 
