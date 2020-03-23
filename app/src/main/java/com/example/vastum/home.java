@@ -83,13 +83,12 @@ public class home extends Fragment {
             dm.setHeaderTitle("Section " + i);
 
             tvPartList = new ArrayList<>();
-            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
-            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
-            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
-            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
-            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
-            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
-
+//            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
+//            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
+//            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
+//            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
+//            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
+//            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
             dm.setAllItemsInSection(tvPartList);
 
             allSampleData.add(dm);

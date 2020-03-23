@@ -1,11 +1,16 @@
 package com.example.vastum;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,13 +20,17 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,9 +38,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -39,7 +58,7 @@ import java.util.List;
  * Use the {@link sell#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class sell extends Fragment implements  sellPointsDialog.sellPointsListener{
+public class sell extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,10 +78,15 @@ public class sell extends Fragment implements  sellPointsDialog.sellPointsListen
     private int getIntentKey;
     private CardView buttonCard;
     private Spinner category,brand,type,age;
-    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabase,mdbProd;
     private RelativeLayout relativeLayout;
     private TextView textPoints;
     private String points;
+    private StorageReference stReff;
+    private ProductsInfo prod;
+    private SharedPreferences pref;
+    private Uri mImageUri;
+
     public sell() {
         // Required empty public constructor
     }
@@ -92,6 +116,7 @@ public class sell extends Fragment implements  sellPointsDialog.sellPointsListen
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -106,11 +131,24 @@ public class sell extends Fragment implements  sellPointsDialog.sellPointsListen
         type = view.findViewById(R.id.itemTypeDropDown);
         age=view.findViewById(R.id.itemAgeDropDown);
         relativeLayout = view.findViewById(R.id.homeRelative);
-
         mDatabase = FirebaseDatabase.getInstance().getReference("/Category");
+        mdbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
+        pref = this.getActivity().getSharedPreferences("StoredPreferences",MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("NotFirstTime",false);
+        editor.commit();
+
+        prod = new ProductsInfo(mdbProd.push().getKey());
+
+
+
         spinnerfillup();
 
 
+        editor.putString("productID",prod.getProductID());
+        editor.commit();
+        stReff = FirebaseStorage.getInstance().getReference().child(prod.getProductID());
 
         imgCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +287,14 @@ public class sell extends Fragment implements  sellPointsDialog.sellPointsListen
         //sellPointsDialog sellPointsDialog= new sellPointsDialog();
         //sellPointsDialog.setPoints(checkPoints());
         //sellPointsDialog.show(this.getContext()getParentFragmentManager(),"sellPointsDialog");
+
+        prod.setProductCategory(category.getSelectedItem().toString());
+        prod.setProductBrand(brand.getSelectedItem().toString());
+        prod.setProductAge(age.getSelectedItem().toString());
+        prod.setProductType(type.getSelectedItem().toString());
+        prod.setProductName(type.getSelectedItem().toString() +" "+ category.getSelectedItem().toString());
+        prod.setProductPoints(checkPoints());
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.show_sell_points,null);
@@ -259,6 +305,7 @@ public class sell extends Fragment implements  sellPointsDialog.sellPointsListen
                 .setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteFolder();
                         dialogInterface.dismiss();
                     }
                 })
@@ -267,7 +314,18 @@ public class sell extends Fragment implements  sellPointsDialog.sellPointsListen
                     public void onClick(DialogInterface dialogInterface, int i) {
                         sellSuccessful();
                     }
+                })
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                        deleteFolder();
+                        dialogInterface.dismiss();
+            }
                 }).show();
+
+    }
+
+    private void deleteFolder(){
 
     }
 
@@ -280,9 +338,42 @@ public class sell extends Fragment implements  sellPointsDialog.sellPointsListen
         startActivityForResult(cInt,Image_Capture_Code);
     }
 
-    @Override
     public void sellSuccessful() {
-
+        mdbProd.child(prod.getProductID()).setValue(prod);
     }
 
+    private String getFileExtension(Uri uri){
+        ContentResolver cR = getContext().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getMimeTypeFromExtension(cR.getType(uri));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Image_Capture_Code) {
+            if (resultCode == RESULT_OK) {
+
+                Bitmap bitmapImage  = (Bitmap)data.getExtras().get("data");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), bitmapImage, "Title", null);
+                mImageUri = Uri.parse(path);
+
+
+                Picasso.get().load(mImageUri).into(imgCapture);
+                int imageNumber = pref.getBoolean("NotFirstImage",false)?(new Random()).nextInt(Integer.MAX_VALUE):1;
+                if(imageNumber == 1){
+                    (pref.edit()).putBoolean("NotFirstImage",true).commit();
+                }
+                StorageReference mFileRef = stReff.child("img"+imageNumber+"."+getFileExtension(mImageUri));
+
+                mFileRef.putFile(mImageUri);
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this.getContext(), "Cancelled", Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
 }

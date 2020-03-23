@@ -46,7 +46,6 @@
         app:itemTextColor="@color/black"
         app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/nav_menu"
-        app:labelVisibilityMode="labeled"
         app:itemHorizontalTranslationEnabled="true"
         />
 

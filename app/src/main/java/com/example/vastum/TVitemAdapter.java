@@ -31,8 +31,7 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
     @Override
     public void onBindViewHolder(@NonNull itemViewHolder holder, int position) {
         ProductsInfo currentItem = mList.get(position);
-        holder.imageView.setImageResource(currentItem.getImageResource());
-        holder.textView1.setText(currentItem.getName());
+        holder.textView1.setText(currentItem.getProductName());
     }
 
     @Override
