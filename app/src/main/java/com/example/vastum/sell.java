@@ -368,11 +368,6 @@ public class sell extends Fragment {
         mdbUser.child(Uid).child("userSoldProduct").setValue(Prod+","+prod.getProductID());
     }
 
-    private String getFileExtension(Uri uri){
-        ContentResolver cR = getContext().getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getMimeTypeFromExtension(cR.getType(uri));
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -392,7 +387,7 @@ public class sell extends Fragment {
                 if(imageNumber == 1){
                     (pref.edit()).putBoolean("NotFirstImage",true).commit();
                 }
-                StorageReference mFileRef = stReff.child("img"+imageNumber+"."+getFileExtension(mImageUri));
+                StorageReference mFileRef = stReff.child("img"+imageNumber+".jpeg");
 
                 mFileRef.putFile(mImageUri);
             }
