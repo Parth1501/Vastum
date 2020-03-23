@@ -19,14 +19,38 @@
         android:textSize="30dp" />
 
     <Button
+        android:id="@+id/Account_Details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Logout"
+        android:layout_below="@id/UserName"
+        android:elevation="10dp"
+        android:text="Account Details"
+        android:textColor="@android:color/black"
         android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Order Details"
+        android:textSize="20dp"
+        android:layout_below="@id/Account_Details"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:layout_centerInParent="true"
         android:elevation="10dp"
-        android:id="@+id/ProfileLogoutButton"/>
+        android:id="@+id/Order_details"/>
+
+
+    <Button
+        android:id="@+id/ProfileLogoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Order_details"
+        android:elevation="10dp"
+        android:text="Logout"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

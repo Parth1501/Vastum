@@ -19,18 +19,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main2Activity"
+        <activity android:name=".ordersdetails"></activity>
+        <activity android:name=".order_details_fragment" />
+        <activity
+            android:name=".Main2Activity"
             android:label=""
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:launchMode="singleTop"><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter></activity>
-        <!-- we dont need that here
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!--
+ we dont need that here
         <activity android:name=".RedeemActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".HomeActivity" /> -->
+        <activity android:name=".HomeActivity" />
+        -->
         <activity android:name=".LoginAcitivity" />
         <activity
             android:name=".SplashScreen"
@@ -41,11 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- we dont need that here
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/MainActivityTheme">
-        </activity> -->
     </application>
 
 </manifest>

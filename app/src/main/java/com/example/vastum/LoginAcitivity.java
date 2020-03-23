@@ -80,6 +80,7 @@ public class LoginAcitivity extends AppCompatActivity {
         //first we intialized the FirebaseAuth object
         mAuth = FirebaseAuth.getInstance();
 
+
         //Then we need a GoogleSignInOptions object
         //And we need to build it as below
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
