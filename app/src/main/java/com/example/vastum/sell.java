@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -78,7 +79,7 @@ public class sell extends Fragment {
     private int getIntentKey;
     private CardView buttonCard;
     private Spinner category,brand,type,age;
-    private DatabaseReference mDatabase,mdbProd;
+    private DatabaseReference mDatabase,mdbProd,mdbUser;
     private RelativeLayout relativeLayout;
     private TextView textPoints;
     private String points;
@@ -86,6 +87,7 @@ public class sell extends Fragment {
     private ProductsInfo prod;
     private SharedPreferences pref;
     private Uri mImageUri;
+    private FirebaseAuth mAuth;
 
     public sell() {
         // Required empty public constructor
@@ -133,7 +135,10 @@ public class sell extends Fragment {
         relativeLayout = view.findViewById(R.id.homeRelative);
         mDatabase = FirebaseDatabase.getInstance().getReference("/Category");
         mdbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
+        mdbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
         pref = this.getActivity().getSharedPreferences("StoredPreferences",MODE_PRIVATE);
+
+        mAuth = FirebaseAuth.getInstance();
 
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean("NotFirstTime",false);
@@ -340,6 +345,27 @@ public class sell extends Fragment {
 
     public void sellSuccessful() {
         mdbProd.child(prod.getProductID()).setValue(prod);
+
+        mdbUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(ds.child("userID").getValue().toString().equals(mAuth.getCurrentUser().getUid())){
+                       setUserProducts(ds.getKey().toString(),  ds.child("userSoldProduct").getValue().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void setUserProducts(String Uid,String Prod){
+        mdbUser.child(Uid).child("userSoldProduct").setValue(Prod+","+prod.getProductID());
     }
 
     private String getFileExtension(Uri uri){
