@@ -70,16 +70,16 @@ public class selldetailsfragment extends Fragment {
     private void SoldProducts(String Products)
     {
        final String[]  products = Products.split(",");
-        Log.e("THE PRODUCTS",Products+products[0]+",***"+products[1]+"**");
+       // Log.e("THE PRODUCTS",Products+products[0]+",***"+products[1]+"**");
         mdbProd.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(String prod : products){
                     if(!prod.equals("")){
                         for(DataSnapshot ds: dataSnapshot.getChildren()){
-                            Log.e("THE INFO",ds.child("productID").getValue().toString());
+//                            Log.e("THE INFO",ds.child("productID").getValue().toString());
                             if(ds.child("productID").getValue().toString().equals(prod)){
-                                Log.e("THE INFO::",ds.child("productID").getValue().toString());
+//                                Log.e("THE INFO::",ds.child("productID").getValue().toString());
                                 productsInfos.add(ds.getValue(ProductsInfo.class));
                             }
                         }
