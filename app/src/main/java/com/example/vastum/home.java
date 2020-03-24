@@ -2,6 +2,7 @@ package com.example.vastum;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -61,6 +69,7 @@ public class home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -76,24 +85,41 @@ public class home extends Fragment {
     }
 
     private void CreateList() {
-        for (int i = 1; i <= 3; i++) {
+        Query databsase = FirebaseDatabase.getInstance().getReference("Category");
+        DatabaseReference mdbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
 
-            ProductsSectionsModel dm = new ProductsSectionsModel();
+        databsase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println(dataSnapshot.getChildrenCount());
 
-            dm.setHeaderTitle("Section " + i);
+                for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
 
-            tvPartList = new ArrayList<>();
+                    ProductsSectionsModel dm = new ProductsSectionsModel();
+
+                    dm.setHeaderTitle("Section " + i);
+
+                    tvPartList = new ArrayList<>();
 //            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
 //            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
 //            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
 //            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
 //            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
 //            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
-            dm.setAllItemsInSection(tvPartList);
+                    dm.setAllItemsInSection(tvPartList);
 
-            allSampleData.add(dm);
+                    allSampleData.add(dm);
 
-        }
+                }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void BuildRecyclerView() {

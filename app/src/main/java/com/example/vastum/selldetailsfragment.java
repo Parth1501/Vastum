@@ -43,7 +43,7 @@ public class selldetailsfragment extends Fragment {
                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                                            if (ds.child("userID").getValue().toString().equals(mAuth.getCurrentUser().getUid())) {
-                                                              sell=ds.child("userSoldProduct").getValue(String.class);
+                                                         //     sell=ds.child("userSoldProduct").getValue(String.class);
                                                            }
                                                        }
                                                    }
@@ -53,7 +53,7 @@ public class selldetailsfragment extends Fragment {
 
                                                    }
 
-                                               };
+                                               });
             recyclerView=view.findViewById(R.id.itemrecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(),LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(new ItemRecyclerAdapter(this.getContext(),items));
