@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,7 @@ public class home extends Fragment {
     private ArrayList<ProductsInfo> tvPartList;
     ArrayList<ProductsSectionsModel> allSampleData;
     private DatabaseReference dbCategories, dbProd;
+    private StorageReference stRef;
     private ProductsSectionAdapter adapter;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -81,6 +84,7 @@ public class home extends Fragment {
         my_recycler_view=view.findViewById(R.id.RecyclerItems);
         dbCategories = FirebaseDatabase.getInstance().getReference().child("Category");
         dbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
+        stRef = FirebaseStorage.getInstance().getReference();
         allSampleData = new ArrayList<ProductsSectionsModel>();
         CreateList();
         BuildRecyclerView();
