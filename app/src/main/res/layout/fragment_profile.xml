@@ -19,12 +19,40 @@
         android:textSize="30dp" />
 
     <Button
-        android:id="@+id/Account_Details"
+        android:id="@+id/profileInfobtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/UserName"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="170dp"
+        android:layout_marginEnd="-4dp"
+        android:layout_marginBottom="513dp"
         android:elevation="10dp"
-        android:text="Account Details"
+        android:text="profile"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+
+    <Button
+        android:id="@+id/ordersbtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="251dp"
+        android:layout_marginEnd="-4dp"
+        android:layout_marginBottom="432dp"
+        android:elevation="10dp"
+        android:text="Orders"
         android:textColor="@android:color/black"
         android:textSize="20dp"
         android:textStyle="bold" />
@@ -32,25 +60,12 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Order Details"
+        android:text="Logout"
         android:textSize="20dp"
-        android:layout_below="@id/Account_Details"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:layout_centerInParent="true"
         android:elevation="10dp"
-        android:id="@+id/Order_details"/>
-
-
-    <Button
-        android:id="@+id/ProfileLogoutButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Order_details"
-        android:elevation="10dp"
-        android:text="Logout"
-        android:textColor="@android:color/black"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:id="@+id/ProfileLogoutButton"/>
 
 </RelativeLayout>

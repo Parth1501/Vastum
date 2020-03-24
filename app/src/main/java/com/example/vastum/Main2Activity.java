@@ -78,7 +78,7 @@ public class Main2Activity extends AppCompatActivity {
             startActivity(new Intent(this, LoginAcitivity.class));
             finish();
         }
-
+        location();
         bnv = findViewById(R.id.nav);
 
         //to handle navigation by android itself : it will create new fragment every time old values will be destroyed
@@ -128,7 +128,7 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
-        location();
+
 
     }
 
@@ -238,5 +238,15 @@ public class Main2Activity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         stopLocationUpdates();
+    }
+
+    @Override
+    public void onBackPressed(){
+        /*int count=fm.getBackStackEntryCount();
+        System.out.println(count);
+        if (count==0)
+            super.onBackPressed();
+        else*/
+            this.fm.popBackStack();
     }
 }
