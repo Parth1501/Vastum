@@ -1,5 +1,6 @@
 package com.example.vastum;
 
+import android.media.tv.TvContentRating;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -35,11 +36,12 @@ public class home extends Fragment {
     RecyclerView my_recycler_view;
     private ArrayList<ProductsInfo> tvPartList;
     ArrayList<ProductsSectionsModel> allSampleData;
-
+    private DatabaseReference dbCategories, dbProd;
+    private ProductsSectionAdapter adapter;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private String Categories="";
     public home() {
         // Required empty public constructor
     }
@@ -69,7 +71,6 @@ public class home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -78,6 +79,8 @@ public class home extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_home, container, false);
         my_recycler_view=view.findViewById(R.id.RecyclerItems);
+        dbCategories = FirebaseDatabase.getInstance().getReference().child("Category");
+        dbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
         allSampleData = new ArrayList<ProductsSectionsModel>();
         CreateList();
         BuildRecyclerView();
@@ -85,34 +88,16 @@ public class home extends Fragment {
     }
 
     private void CreateList() {
-        Query databsase = FirebaseDatabase.getInstance().getReference("Category");
-        DatabaseReference mdbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
-
-        databsase.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println(dataSnapshot.getChildrenCount());
-
-                for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
-
-                    ProductsSectionsModel dm = new ProductsSectionsModel();
-
-                    dm.setHeaderTitle("Section " + i);
-
-                    tvPartList = new ArrayList<>();
-//            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
-//            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
-//            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
-//            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
-//            tvPartList.add(new ProductsInfo("WHERE IT IS", R.drawable.logo));
-//            tvPartList.add(new ProductsInfo("HERE IT IS", R.drawable.monitor));
-                    dm.setAllItemsInSection(tvPartList);
-
-                    allSampleData.add(dm);
-
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    Categories+=","+ds.getKey();
+                    Log.e("THE KEYS",ds.getKey());
                 }
+                CreateSeparateLists();
+                Log.e("HE EE ",Categories);
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -120,12 +105,43 @@ public class home extends Fragment {
             }
         });
 
+        Log.e("THE CATEGORIES",Categories+"bb");
+    }
+
+    private void  CreateSeparateLists(){
+        final String[] DiffCategory = Categories.split(",");
+        dbProd.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (String Category : DiffCategory) {
+                    if(!Category.equals("")){
+                        ProductsSectionsModel model = new ProductsSectionsModel();
+                        model.setHeaderTitle(Category);
+                        tvPartList = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()){
+                            if(ds.child("productCategory").getValue(String.class).equals(Category)){
+                                tvPartList.add(ds.getValue(ProductsInfo.class));
+                            }
+                        }
+                        model.setAllItemsInSection(tvPartList);
+                        allSampleData.add(model);
+                    }
+
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void BuildRecyclerView() {
 
         my_recycler_view.setHasFixedSize(true);
-        ProductsSectionAdapter adapter = new ProductsSectionAdapter( allSampleData,this.getContext());
+        adapter = new ProductsSectionAdapter( allSampleData,this.getContext());
         my_recycler_view.setLayoutManager(new LinearLayoutManager(this.getContext(),LinearLayoutManager.VERTICAL,false));
         my_recycler_view.setAdapter(adapter);
 

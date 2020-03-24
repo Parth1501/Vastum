@@ -1,6 +1,7 @@
 package com.example.vastum;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +21,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class selldetailsfragment extends Fragment {
     View view;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser userid = mAuth.getCurrentUser();
     String user = userid.getUid();
     RecyclerView recyclerView;
-    String items[]={"item1","item2","item3","item4"};
+    private TVitemAdapter adapter;
+    private ArrayList<ProductsInfo> productsInfos;
+    private DatabaseReference mdbProd;
     selldetailsfragment(){
 
     }
@@ -36,14 +41,16 @@ public class selldetailsfragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.selldetailsfragment,container,false);
-        final String sell="";
+        productsInfos = new ArrayList<>();
+        adapter = new TVitemAdapter(productsInfos);
         DatabaseReference mdbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
+        mdbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
         mdbUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                                    @Override
                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                                            if (ds.child("userID").getValue().toString().equals(mAuth.getCurrentUser().getUid())) {
-                                                         //     sell=ds.child("userSoldProduct").getValue(String.class);
+                                                              SoldProducts(ds.child("userSoldProduct").getValue(String.class));
                                                            }
                                                        }
                                                    }
@@ -54,10 +61,40 @@ public class selldetailsfragment extends Fragment {
                                                    }
 
                                                });
-            recyclerView=view.findViewById(R.id.itemrecycler);
+        recyclerView=view.findViewById(R.id.itemrecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(),LinearLayoutManager.VERTICAL,false));
-        recyclerView.setAdapter(new ItemRecyclerAdapter(this.getContext(),items));
+        recyclerView.setAdapter(adapter);
         return view;
+    }
+
+    private void SoldProducts(String Products)
+    {
+       final String[]  products = Products.split(",");
+        Log.e("THE PRODUCTS",Products+products[0]+",***"+products[1]+"**");
+        mdbProd.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(String prod : products){
+                    if(!prod.equals("")){
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            Log.e("THE INFO",ds.child("productID").getValue().toString());
+                            if(ds.child("productID").getValue().toString().equals(prod)){
+                                Log.e("THE INFO::",ds.child("productID").getValue().toString());
+                                productsInfos.add(ds.getValue(ProductsInfo.class));
+                            }
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 }
 
