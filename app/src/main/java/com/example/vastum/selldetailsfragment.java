@@ -42,7 +42,7 @@ public class selldetailsfragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.selldetailsfragment,container,false);
         productsInfos = new ArrayList<>();
-        adapter = new TVitemAdapter(productsInfos);
+        adapter = new TVitemAdapter(productsInfos,getContext());
         DatabaseReference mdbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
         mdbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
         mdbUser.addListenerForSingleValueEvent(new ValueEventListener() {

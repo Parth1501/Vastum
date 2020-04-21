@@ -1,5 +1,7 @@
 package com.example.vastum;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHolder> {
-
+    private Context context;
     private ArrayList<ProductsInfo> mList;
     private OnItemClickListener mListener;
 
@@ -32,6 +36,8 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
     public void onBindViewHolder(@NonNull itemViewHolder holder, int position) {
         ProductsInfo currentItem = mList.get(position);
         holder.textView1.setText(currentItem.getProductName());
+        Glide.with(context).load(currentItem.getProductFirstImageURI()).into(holder.imageView);
+        Log.e("THE IMAGE",currentItem.getProductFirstImageURI()+" ");
     }
 
     @Override
@@ -65,8 +71,9 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
             });
         }
     }
-    public TVitemAdapter(ArrayList<ProductsInfo> itemList){
+    public TVitemAdapter(ArrayList<ProductsInfo> itemList, Context context){
         mList  = itemList;
+        this.context = context;
     }
 
 }

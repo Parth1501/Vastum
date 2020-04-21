@@ -383,10 +383,12 @@ public class sell extends Fragment {
 
 
                 Picasso.get().load(mImageUri).into(imgCapture);
-                int imageNumber = pref.getBoolean("NotFirstImage",false)?(new Random()).nextInt(Integer.MAX_VALUE):1;
+                int imageNumber = pref.getBoolean("NotFirstTime",false)?(new Random()).nextInt(Integer.MAX_VALUE):1;
                 if(imageNumber == 1){
-                    (pref.edit()).putBoolean("NotFirstImage",true).commit();
+                    (pref.edit()).putBoolean("NotFirstTime",true).commit();
+                    prod.setProductFirstImageURI(mImageUri.toString());
                 }
+                prod.setProductImageUri(mImageUri.toString());
                 StorageReference mFileRef = stReff.child("img"+imageNumber+".jpeg");
 
                 mFileRef.putFile(mImageUri);

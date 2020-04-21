@@ -1,8 +1,9 @@
 package com.example.vastum;
 
-public class ProductsInfo {
-    private String ProductCategory,ProductBrand,ProductID,ProductName,ProductType,ProductAge,ProductPoints;
 
+public class ProductsInfo {
+    private String ProductCategory,ProductBrand,ProductID,ProductName,ProductType,ProductAge,ProductPoints,ProductFirstImageURI;
+    private String ProductImageUri;
     public ProductsInfo(String productID){
         ProductID = productID;
         ProductCategory="";
@@ -11,8 +12,25 @@ public class ProductsInfo {
         ProductType="";
         ProductAge="";
         ProductPoints="";
+        ProductFirstImageURI = "";
+        ProductImageUri ="";
     }
 
+    public String getProductFirstImageURI() {
+        return ProductFirstImageURI;
+    }
+
+    public void setProductFirstImageURI(String productFirstImageURI) {
+        ProductFirstImageURI = productFirstImageURI;
+    }
+
+    public String getProductImageUri() {
+        return ProductImageUri;
+    }
+
+    public void setProductImageUri(String ImageURI) {
+        ProductImageUri+="," + ImageURI;
+    }
 
     public String getProductCategory() {
         return ProductCategory;
