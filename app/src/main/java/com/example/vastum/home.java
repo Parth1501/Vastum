@@ -155,6 +155,4 @@ public class home extends Fragment {
 
 
     }
-
-
 }

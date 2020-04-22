@@ -79,7 +79,7 @@ public class Main2Activity extends AppCompatActivity {
             startActivity(new Intent(this, LoginAcitivity.class));
             finish();
         }
-        location();
+
         bnv = findViewById(R.id.nav);
 
         //to handle navigation by android itself : it will create new fragment every time old values will be destroyed
@@ -129,7 +129,7 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
-
+        location();
 
     }
 
@@ -242,12 +242,28 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        /*int count=fm.getBackStackEntryCount();
-        System.out.println(count);
-        if (count==0)
-            super.onBackPressed();
-        else*/
-            this.fm.popBackStack();
+    public void onBackPressed() {
+        Fragment hpf=fm.findFragmentByTag("hpf");
+
+        if(active==fr1 && hpf==null){
+            if(backcnt==1)
+                super.onBackPressed();
+            if(backcnt==0){
+                backcnt++;
+                Toast.makeText(Main2Activity.this,"press back again to exit",Toast.LENGTH_SHORT).show();
+            }
+
+        }
+        else {
+            if(hpf!=null) {
+                fm.beginTransaction().hide(active).hide(hpf).show(fm.findFragmentByTag("home")).commit();
+                fm.beginTransaction().remove(hpf).commit();
+            }else
+                fm.beginTransaction().hide(active).show(fr1).commit();
+            bnv.setSelectedItemId(R.id.home);
+            active=fr1;
+            backcnt=0;
+        }
+
     }
 }
