@@ -1,6 +1,7 @@
 package com.example.vastum;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -306,6 +311,7 @@ public class sell extends Fragment {
         View view = inflater.inflate(R.layout.show_sell_points,null);
         textPoints = view.findViewById(R.id.textPoints);
         textPoints.setText(checkPoints());
+        toast(stReff.toString());
         builder.setView(view)
                 .setTitle("Points")
                 .setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
@@ -330,9 +336,48 @@ public class sell extends Fragment {
                 }).show();
 
     }
+    private void toast(String s) {
+        Toast.makeText(getContext(),s,Toast.LENGTH_LONG).show();
+    }
 
+//EDITED BY PARTH
     private void deleteFolder(){
+        stReff.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for(StorageReference file:listResult.getItems()) {
+                    file.delete();
+                    toast("Deleted");
+                }
+            }
+        });
+        //Task<ListResult> t=stReff.listAll();
+        //toast(t.toString());
 
+        /*stReff.child().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+              //  Toast.makeText(getContext(),"Product removed",Toast.LENGTH_LONG).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e){
+                System.out.println("---------ERRROR--------------" +"-------------------------------------");
+                Toast.makeText(getContext(),e.toString(),Toast.LENGTH_LONG).show();
+            }
+        });
+        stReff.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(),"Product removed",Toast.LENGTH_LONG).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e){
+                System.out.println("---------ERRROR--------------" +"-------------------------------------");
+                Toast.makeText(getContext(),e.toString(),Toast.LENGTH_LONG).show();
+            }
+        });*/
     }
 
     private String checkPoints(){
@@ -375,7 +420,7 @@ public class sell extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Image_Capture_Code) {
             if (resultCode == RESULT_OK) {
-
+                final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
                 Bitmap bitmapImage  = (Bitmap)data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -413,6 +458,7 @@ public class sell extends Fragment {
                             prod.setProductFirstImageURI(downloadUri.toString());
                         }
                         prod.setProductImageUri(downloadUri.toString());
+                        loading.cancel();
                         Toast.makeText(getContext()," Image Uploaded ", Toast.LENGTH_SHORT).show();
                     }
                 });
