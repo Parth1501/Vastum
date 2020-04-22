@@ -53,8 +53,9 @@ public class Main2Activity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private LocationRequest mlocationRequest;
-    Fragment active,fr1,fr2,fr3,fr4;
+    public Fragment active,fr1,fr2,fr3,fr4;
     BottomNavigationView bnv;
+    int backcnt=0;
     FragmentManager fm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,17 +92,17 @@ public class Main2Activity extends AppCompatActivity {
         */
 
         //to customly resume fragments after events like backpress or change fragment
-        fr1=new home();
+        fr1=new newHome();
         fr2=new sell();
         fr3=new redeem();
         fr4=new profile();
         active=fr1;
         fm=getSupportFragmentManager();
 
-        fm.beginTransaction().add(R.id.main_cont,fr2,"2").hide(fr2).commit();
-        fm.beginTransaction().add(R.id.main_cont,fr3,"3").hide(fr3).commit();
-        fm.beginTransaction().add(R.id.main_cont,fr4,"4").hide(fr4).commit();
-        fm.beginTransaction().add(R.id.main_cont,fr1,"1").commit();
+        fm.beginTransaction().add(R.id.fragment2,fr2,"2").hide(fr2).commit();
+        fm.beginTransaction().add(R.id.fragment2,fr3,"3").hide(fr3).commit();
+        fm.beginTransaction().add(R.id.fragment2,fr4,"4").hide(fr4).commit();
+        fm.beginTransaction().add(R.id.fragment2,fr1,"1").show(fr1).commit();
 
         bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

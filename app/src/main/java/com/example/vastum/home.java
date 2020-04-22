@@ -1,5 +1,6 @@
 package com.example.vastum;
 
+import android.content.Context;
 import android.media.tv.TvContentRating;
 import android.os.Bundle;
 
@@ -41,12 +42,15 @@ public class home extends Fragment {
     private DatabaseReference dbCategories, dbProd;
     private StorageReference stRef;
     private ProductsSectionAdapter adapter;
+    View view;
+    Context context;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private String Categories="";
     public home() {
         // Required empty public constructor
+        context=this.getContext();
     }
 
     /**
@@ -80,7 +84,7 @@ public class home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_home, container, false);
+        view=inflater.inflate(R.layout.fragment_home, container, false);
         my_recycler_view=view.findViewById(R.id.RecyclerItems);
         dbCategories = FirebaseDatabase.getInstance().getReference().child("Category");
         dbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
@@ -148,6 +152,7 @@ public class home extends Fragment {
         adapter = new ProductsSectionAdapter( allSampleData,this.getContext());
         my_recycler_view.setLayoutManager(new LinearLayoutManager(this.getContext(),LinearLayoutManager.VERTICAL,false));
         my_recycler_view.setAdapter(adapter);
+
 
     }
 

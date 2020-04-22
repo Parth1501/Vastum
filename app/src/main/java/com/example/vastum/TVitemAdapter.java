@@ -1,6 +1,7 @@
 package com.example.vastum;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +41,20 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
         holder.textView1.setText(currentItem.getProductName());
         Glide.with(context).load(currentItem.getProductFirstImageURI()).into(holder.imageView);
         Log.e("THE IMAGE",currentItem.getProductFirstImageURI()+" ");
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm=((Main2Activity) v.getContext()).getSupportFragmentManager();
+                Fragment old=fm.findFragmentByTag("home");
+                Fragment nfrag=new HomeProductInfoFragment();
+                fm.beginTransaction().addToBackStack("old");
+                fm.beginTransaction().hide(old).commit();
+                Bundle b=new Bundle();
+                b.putString("product id","product id: i dont know where it is");
+                nfrag.setArguments(b);
+                fm.beginTransaction().add(R.id.homehost,nfrag,"hpf").commit();
+            }
+        });
     }
 
     @Override
