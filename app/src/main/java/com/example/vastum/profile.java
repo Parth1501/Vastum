@@ -27,7 +27,7 @@ public class profile extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private Button logoutButton;
-    private Button orderdetails;
+    private Button orderdetails,accountdetails;
     private BottomNavigationView bottomNavigationView;
     private TextView userName;
     private RelativeLayout relativeLayout;
@@ -75,9 +75,15 @@ public class profile extends Fragment {
         logoutButton = view.findViewById(R.id.ProfileLogoutButton);
         userName = view.findViewById(R.id.UserName);
         relativeLayout= view.findViewById(R.id.profileRelative);
-
+        accountdetails=view.findViewById(R.id.Account_Details);
         userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
+        accountdetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),AccountDetailActivity.class));
+            }
+        });
         orderdetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

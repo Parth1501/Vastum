@@ -25,6 +25,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,7 +76,13 @@ public class Main2Activity extends AppCompatActivity {
         Toolbar tb = (Toolbar) findViewById(R.id.inc1);
         setSupportActionBar(tb);
 
-
+        TextView wallet=findViewById(R.id.walletbalance);
+        wallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Main2Activity.this,AccountDetailActivity.class));
+            }
+        });
         if (mAuth.getCurrentUser() == null) {
             startActivity(new Intent(this, LoginAcitivity.class));
             finish();
