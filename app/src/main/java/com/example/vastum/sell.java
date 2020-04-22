@@ -29,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -383,15 +384,38 @@ public class sell extends Fragment {
 
 
                 Picasso.get().load(mImageUri).into(imgCapture);
-                int imageNumber = pref.getBoolean("NotFirstTime",false)?(new Random()).nextInt(Integer.MAX_VALUE):1;
+                final int imageNumber = pref.getBoolean("NotFirstTime",false)?(new Random()).nextInt(Integer.MAX_VALUE):1;
                 if(imageNumber == 1){
                     (pref.edit()).putBoolean("NotFirstTime",true).commit();
-                    prod.setProductFirstImageURI(mImageUri.toString());
+//                    prod.setProductFirstImageURI(mImageUri.toString());
                 }
-                prod.setProductImageUri(mImageUri.toString());
-                StorageReference mFileRef = stReff.child("img"+imageNumber+".jpeg");
+//                pro d.setProductImageUri(mImageUri.toString());
+                final StorageReference mFileRef = stReff.child("img"+imageNumber+".jpeg");
 
-                mFileRef.putFile(mImageUri);
+                mFileRef.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+
+                            if (!task.isSuccessful())
+                            {
+                                throw task.getException();
+                            }
+                            return mFileRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        Uri downloadUri = task.getResult();
+                        if (task.isSuccessful()) {
+                            downloadUri = task.getResult();
+                        }
+                        if(imageNumber == 1){
+                            prod.setProductFirstImageURI(downloadUri.toString());
+                        }
+                        prod.setProductImageUri(downloadUri.toString());
+                        Toast.makeText(getContext()," Image Uploaded ", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this.getContext(), "Cancelled", Toast.LENGTH_LONG).show();

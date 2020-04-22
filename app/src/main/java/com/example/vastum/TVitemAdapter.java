@@ -37,7 +37,7 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
 
     @Override
     public void onBindViewHolder(@NonNull itemViewHolder holder, int position) {
-        ProductsInfo currentItem = mList.get(position);
+        final ProductsInfo currentItem = mList.get(position);
         holder.textView1.setText(currentItem.getProductName());
         Glide.with(context).load(currentItem.getProductFirstImageURI()).into(holder.imageView);
         Log.e("THE IMAGE",currentItem.getProductFirstImageURI()+" ");
@@ -50,7 +50,7 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
                 fm.beginTransaction().addToBackStack("old");
                 fm.beginTransaction().hide(old).commit();
                 Bundle b=new Bundle();
-                b.putString("product id","product id: i dont know where it is");
+                b.putString("product id",currentItem.getProductID());
                 nfrag.setArguments(b);
                 fm.beginTransaction().add(R.id.homehost,nfrag,"hpf").commit();
             }
