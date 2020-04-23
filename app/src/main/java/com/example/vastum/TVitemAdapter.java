@@ -1,5 +1,6 @@
 package com.example.vastum;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,9 +46,11 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
             @Override
             public void onClick(View v) {
                 FragmentManager fm=((Main2Activity) v.getContext()).getSupportFragmentManager();
-                Fragment old=fm.findFragmentByTag("home");
+                Fragment old=fm.findFragmentByTag("category");
+                if(old==null) {
+                    old=fm.findFragmentByTag("home");
+                }
                 Fragment nfrag=new HomeProductInfoFragment();
-                fm.beginTransaction().addToBackStack("old");
                 fm.beginTransaction().hide(old).commit();
                 Bundle b=new Bundle();
                 b.putString("product id",currentItem.getProductID());

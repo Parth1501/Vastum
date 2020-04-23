@@ -265,10 +265,13 @@ public class Main2Activity extends AppCompatActivity {
         }
         else {
             if(hpf!=null) {
-                fm.beginTransaction().hide(active).hide(hpf).show(fm.findFragmentByTag("home")).commit();
+                if(category!=null)
+                    fm.beginTransaction().hide(active).hide(hpf).show(fm.findFragmentByTag("category")).commit();
+                else
+                    fm.beginTransaction().hide(active).hide(hpf).show(fm.findFragmentByTag("home")).commit();
                 fm.beginTransaction().remove(hpf).commit();
             }
-            if(category!=null) {
+            else if(category!=null) {
                 fm.beginTransaction().hide(active).hide(category).show(fm.findFragmentByTag("home")).commit();
                 fm.beginTransaction().remove(category).commit();
             }

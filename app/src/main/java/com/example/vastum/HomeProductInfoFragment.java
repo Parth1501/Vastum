@@ -85,20 +85,7 @@ public class HomeProductInfoFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_home_product_info, container, false);
         final Bundle b=this.getArguments();
         final View newView = view;
-        Button backbtn=view.findViewById(R.id.backbtn);
-        backbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                FragmentManager fm=((Main2Activity) v.getContext()).getSupportFragmentManager();
-                //fm.beginTransaction().detach(fm.findFragmentByTag("hpf"));
-                //fm.popBackStack();
-                fm.beginTransaction().hide(fm.findFragmentByTag("hpf")).commit();
-                fm.beginTransaction().addToBackStack("old");
-                fm.beginTransaction().show(fm.findFragmentByTag("home")).commit();
-                //fm.beginTransaction().replace(R.id.homehost,fm.findFragmentByTag("home")).commit();
-            }
-        });
 
 
         final Gallery gallery= view.findViewById(R.id.gallery1);
