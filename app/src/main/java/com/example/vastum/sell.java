@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -93,8 +94,9 @@ public class sell extends Fragment {
     private StorageReference stReff;
     private ProductsInfo prod;
     private SharedPreferences pref;
-    private Uri mImageUri;
+    private ArrayList<Uri> mImageUri;
     private FirebaseAuth mAuth;
+    int uploadcount;
 
     public sell() {
         // Required empty public constructor
@@ -144,7 +146,7 @@ public class sell extends Fragment {
         mdbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
         mdbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
         pref = this.getActivity().getSharedPreferences("StoredPreferences",MODE_PRIVATE);
-
+        mImageUri=new ArrayList<Uri>();
         mAuth = FirebaseAuth.getInstance();
 
         SharedPreferences.Editor editor = pref.edit();
@@ -332,7 +334,7 @@ public class sell extends Fragment {
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                        deleteFolder();
+                        //deleteFolder();
                         dialogInterface.dismiss();
             }
                 }).show();
@@ -400,6 +402,49 @@ public class sell extends Fragment {
     }
 
     public void sellSuccessful() {
+
+        uploadcount=0;
+        for(Uri u1 : mImageUri){
+            final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
+            final int imageNumber = pref.getBoolean("NotFirstTime", false) ? (new Random()).nextInt(Integer.MAX_VALUE) : 1;
+            if (imageNumber == 1) {
+                (pref.edit()).putBoolean("NotFirstTime", true).commit();
+//                    prod.setProductFirstImageURI(mImageUri.toString());
+            }
+//                pro d.setProductImageUri(mImageUri.toString());
+            final StorageReference mFileRef = stReff.child("img" + imageNumber + ".jpeg");
+
+            mFileRef.putFile(u1).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return mFileRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    Uri downloadUri = task.getResult();
+                    if (task.isSuccessful()) {
+                        downloadUri = task.getResult();
+                        uploadcount++;
+                    }
+                    else {
+                        Toast.makeText(sell.this.getContext(),"Some Images might not be uploaded",Toast.LENGTH_SHORT);
+                    }
+                    if (imageNumber == 1) {
+                        prod.setProductFirstImageURI(downloadUri.toString());
+                    }
+                    prod.setProductImageUri(downloadUri.toString());
+                    loading.cancel();
+                    Toast.makeText(getContext(), uploadcount + " Images Uploaded ", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+        mImageUri.clear();
         mdbProd.child(prod.getProductID()).setValue(prod);
 
         mdbUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -417,7 +462,7 @@ public class sell extends Fragment {
 
             }
         });
-
+        imgCapture.setImageDrawable(getResources().getDrawable(R.drawable.image_add));
     }
 
     private void setUserProducts(String Uid,String Prod){
@@ -429,53 +474,21 @@ public class sell extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ( resultCode == RESULT_OK) {
-            final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
             if (requestCode == Image_Capture_Code) {
 
                 Bitmap bitmapImage = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), bitmapImage, "Title", null);
-                mImageUri = Uri.parse(path);
+                Uri temp=Uri.parse(path);
+                mImageUri.add(temp);
             }
             else if(requestCode == SELECT_FILE){
-                mImageUri = data.getData();
+                mImageUri.add(data.getData());
             }
 
+            Picasso.get().load(mImageUri.get(mImageUri.size()-1)).into(imgCapture);
 
-            Picasso.get().load(mImageUri).into(imgCapture);
-            final int imageNumber = pref.getBoolean("NotFirstTime", false) ? (new Random()).nextInt(Integer.MAX_VALUE) : 1;
-            if (imageNumber == 1) {
-                (pref.edit()).putBoolean("NotFirstTime", true).commit();
-//                    prod.setProductFirstImageURI(mImageUri.toString());
-            }
-//                pro d.setProductImageUri(mImageUri.toString());
-            final StorageReference mFileRef = stReff.child("img" + imageNumber + ".jpeg");
-
-            mFileRef.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    return mFileRef.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    Uri downloadUri = task.getResult();
-                    if (task.isSuccessful()) {
-                        downloadUri = task.getResult();
-                    }
-                    if (imageNumber == 1) {
-                        prod.setProductFirstImageURI(downloadUri.toString());
-                    }
-                    prod.setProductImageUri(downloadUri.toString());
-                    loading.cancel();
-                    Toast.makeText(getContext(), " Image Uploaded ", Toast.LENGTH_SHORT).show();
-                }
-            });
 
         }
         else if (resultCode == RESULT_CANCELED) {
