@@ -1,6 +1,7 @@
 package com.example.vastum;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -73,7 +75,18 @@ public class ProductsSectionAdapter extends RecyclerView.Adapter<ProductsSection
             this.recycler_view_list = (RecyclerView) view.findViewById(R.id.recycler_view_list);
             this.btnMore= (Button) view.findViewById(R.id.btnMore);
 
-
+            this.btnMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fm=((Main2Activity) v.getContext()).getSupportFragmentManager();
+                    Fragment old=fm.findFragmentByTag("home");
+                    Bundle b1=new Bundle();
+                    b1.putString("title",itemTitle.getText().toString());
+                    Fragment newfrag=new CategoryBrowse();
+                    newfrag.setArguments(b1);
+                    fm.beginTransaction().hide(old).add(R.id.homehost,newfrag,"category").commit();
+                }
+            });
         }
 
     }

@@ -252,8 +252,9 @@ public class Main2Activity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Fragment hpf=fm.findFragmentByTag("hpf");
+        Fragment category=fm.findFragmentByTag("category");
 
-        if(active==fr1 && hpf==null){
+        if(active==fr1 && hpf==null && category==null){
             if(backcnt==1)
                 super.onBackPressed();
             if(backcnt==0){
@@ -266,7 +267,12 @@ public class Main2Activity extends AppCompatActivity {
             if(hpf!=null) {
                 fm.beginTransaction().hide(active).hide(hpf).show(fm.findFragmentByTag("home")).commit();
                 fm.beginTransaction().remove(hpf).commit();
-            }else
+            }
+            if(category!=null) {
+                fm.beginTransaction().hide(active).hide(category).show(fm.findFragmentByTag("home")).commit();
+                fm.beginTransaction().remove(category).commit();
+            }
+            else
                 fm.beginTransaction().hide(active).show(fr1).commit();
             bnv.setSelectedItemId(R.id.home);
             active=fr1;
