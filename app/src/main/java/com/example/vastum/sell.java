@@ -82,6 +82,7 @@ public class sell extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private ImageView imgCapture;
     private static final int Image_Capture_Code = 1;
+    private static final int SELECT_FILE = 2 ;
     private int getIntentKey;
     private CardView buttonCard;
     private Spinner category,brand,type,age;
@@ -164,7 +165,8 @@ public class sell extends Fragment {
         imgCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                camera();
+                selectImage();
+//                camera();
             }
         });
         buttonCard.setOnClickListener(new View.OnClickListener() {
@@ -384,9 +386,17 @@ public class sell extends Fragment {
         return "1000";
     }
 
-    private void camera() {
+    private void cameraIntent() {
         Intent cInt = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cInt,Image_Capture_Code);
+    }
+
+    private void galleryIntent()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
     }
 
     public void sellSuccessful() {
@@ -418,55 +428,80 @@ public class sell extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Image_Capture_Code) {
-            if (resultCode == RESULT_OK) {
-                final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
-                Bitmap bitmapImage  = (Bitmap)data.getExtras().get("data");
+        if ( resultCode == RESULT_OK) {
+            final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
+            if (requestCode == Image_Capture_Code) {
+
+                Bitmap bitmapImage = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), bitmapImage, "Title", null);
                 mImageUri = Uri.parse(path);
+            }
+            else if(requestCode == SELECT_FILE){
+                mImageUri = data.getData();
+            }
 
 
-                Picasso.get().load(mImageUri).into(imgCapture);
-                final int imageNumber = pref.getBoolean("NotFirstTime",false)?(new Random()).nextInt(Integer.MAX_VALUE):1;
-                if(imageNumber == 1){
-                    (pref.edit()).putBoolean("NotFirstTime",true).commit();
+            Picasso.get().load(mImageUri).into(imgCapture);
+            final int imageNumber = pref.getBoolean("NotFirstTime", false) ? (new Random()).nextInt(Integer.MAX_VALUE) : 1;
+            if (imageNumber == 1) {
+                (pref.edit()).putBoolean("NotFirstTime", true).commit();
 //                    prod.setProductFirstImageURI(mImageUri.toString());
-                }
+            }
 //                pro d.setProductImageUri(mImageUri.toString());
-                final StorageReference mFileRef = stReff.child("img"+imageNumber+".jpeg");
+            final StorageReference mFileRef = stReff.child("img" + imageNumber + ".jpeg");
 
-                mFileRef.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+            mFileRef.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
 
-                            if (!task.isSuccessful())
-                            {
-                                throw task.getException();
-                            }
-                            return mFileRef.getDownloadUrl();
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
                     }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        Uri downloadUri = task.getResult();
-                        if (task.isSuccessful()) {
-                            downloadUri = task.getResult();
-                        }
-                        if(imageNumber == 1){
-                            prod.setProductFirstImageURI(downloadUri.toString());
-                        }
-                        prod.setProductImageUri(downloadUri.toString());
-                        loading.cancel();
-                        Toast.makeText(getContext()," Image Uploaded ", Toast.LENGTH_SHORT).show();
+                    return mFileRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    Uri downloadUri = task.getResult();
+                    if (task.isSuccessful()) {
+                        downloadUri = task.getResult();
                     }
-                });
-            }
-            else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this.getContext(), "Cancelled", Toast.LENGTH_LONG).show();
-            }
+                    if (imageNumber == 1) {
+                        prod.setProductFirstImageURI(downloadUri.toString());
+                    }
+                    prod.setProductImageUri(downloadUri.toString());
+                    loading.cancel();
+                    Toast.makeText(getContext(), " Image Uploaded ", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
+        else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this.getContext(), "Cancelled", Toast.LENGTH_LONG).show();
 
+        }
+    }
+
+    private void selectImage(){
+        final CharSequence[] items = { "Take Photo", "Choose from Library",
+                "Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+//                boolean result=Utility.checkPermission(getContext());
+                if (items[item].equals("Take Photo")) {
+                    cameraIntent();
+                } else if (items[item].equals("Choose from Library")) {
+                    galleryIntent();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 }
