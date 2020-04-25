@@ -7,9 +7,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -48,7 +52,7 @@ public class redeem extends Fragment {
     BottomNavigationView bottomNavigationView;
     private List<String> voucher_name;
     private List<Integer> points;
-    private List<String>  already_redeem;
+    private List<String> already_redeem;
     private List<String> redeem_keys;
     ReedemAdapter mAdapter;
     DatabaseReference ref;
@@ -59,7 +63,7 @@ public class redeem extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    ProgressDialog loading;
     public redeem() {
         // Required empty public constructor
     }
@@ -96,25 +100,36 @@ public class redeem extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view=inflater.inflate(R.layout.fragment_redeem, container, false);
+        View view = inflater.inflate(R.layout.fragment_redeem, container, false);
         recycle = view.findViewById(R.id.redeem_recycle);
         recycle.setLayoutManager(new LinearLayoutManager(this.getContext()));
         relativeLayout = view.findViewById(R.id.redeemRelative);
 
-        mdbUser=FirebaseDatabase.getInstance().getReference().child("UserInfo");
-        user= FirebaseAuth.getInstance().getCurrentUser();
+        SwipeRefreshLayout refresh=view.findViewById(R.id.redeem_refresh);
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                FragmentManager fm=((Main2Activity) getContext()).getSupportFragmentManager();
+                Fragment curr=fm.findFragmentByTag("3");
+                fm.beginTransaction().detach(curr).attach(curr).commit();
+
+            }
+        });
+        loading = ProgressDialog.show(getContext(), "Fetching", "Please Wait");
+        mdbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         voucher_name = new ArrayList<>();
-        redeem_keys=new ArrayList<>();
+        redeem_keys = new ArrayList<>();
         points = new ArrayList<>();
-        already_redeem=new ArrayList<>();
-        //setRedemLayout();
+        already_redeem = new ArrayList<>();
+        //setRedemLayout()
         checkAlready();
         return view;
     }
 
     private void checkAlready() {
-        mdbUser=FirebaseDatabase.getInstance().getReference().child("UserInfo");
+        mdbUser = FirebaseDatabase.getInstance().getReference().child("UserInfo");
 
 //        Log.e("Check", user.getUid());
 
@@ -122,26 +137,25 @@ public class redeem extends Fragment {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    if(ds.child("userID").getValue().toString().equals(user.getUid())){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("userID").getValue().toString().equals(user.getUid())) {
                         //setUserProducts(ds.getKey().toString(),  ds.child("userSoldProduct").getValue().toString());
-                            try {
-                                    user_key=ds.getKey();
-                                    wallet_balance=Integer.parseInt(ds.child("userPoints").getValue().toString());
-                                    String redeem_value = ds.child("userRedeem").getValue().toString();
-                                    String[] spilt_redeem_value = redeem_value.split(",");
-                                    for (String str : spilt_redeem_value) {
-                                    already_redeem.add(str);
-                                        Log.e("Spilt String", str + already_redeem.size());
-                                    }
-
+                        try {
+                            user_key = ds.getKey();
+                            wallet_balance = Integer.parseInt(ds.child("userPoints").getValue().toString());
+                            String redeem_value = ds.child("userRedeem").getValue().toString();
+                            String[] spilt_redeem_value = redeem_value.split(",");
+                            for (String str : spilt_redeem_value) {
+                                already_redeem.add(str);
+                                Log.e("Spilt String", str + already_redeem.size());
                             }
-                            catch (Exception e) {
-                                Log.e("DatabseError" ,e.toString() );
-                                wallet_balance=0;
 
-                                //userRedeem Not Found in database
-                            }
+                        } catch (Exception e) {
+                            Log.e("DatabseError", e.toString());
+                            wallet_balance = 0;
+
+                            //userRedeem Not Found in database
+                        }
 
                     }
 
@@ -156,54 +170,82 @@ public class redeem extends Fragment {
 
         });
     }
+
     private void toast(String s) {
-        Toast.makeText(getContext(),s,Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
     }
-    private void setRedemLayout()  {
+
+    private void isAvailable() {
+        if (points.size() == 0) {
+            TextView t = getView().findViewById(R.id.available);
+            t.setVisibility(View.VISIBLE);
+        }
+    }
+    private void sortingList() {
+        int size=points.size();
+        for(int i=0;i<size;i++) {
+            for(int j=0;j<size-i-1;j++) {
+                if(points.get(j)>points.get(j+1)) {
+                    Collections.swap(points,j,j+1);
+                    Collections.swap(voucher_name,j,j+1);
+                    Collections.swap(redeem_keys,j,j+1);
+                }
+            }
+        }
+    }
+    private void setRedemLayout() {
         //checkAlready()
         ref = FirebaseDatabase.getInstance().getReference().child("Redeem");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot ds:dataSnapshot.getChildren()) {
-                    if(!already_redeem.contains(ds.getKey())) {
-                        Log.e("INSIDE", already_redeem.size()+"IN" );
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (!already_redeem.contains(ds.getKey())) {
+                        Log.e("INSIDE", already_redeem.size() + "IN");
                         points.add(Integer.parseInt(ds.child("point").getValue().toString()));
                         voucher_name.add(ds.child("name").getValue().toString());
                         redeem_keys.add(ds.getKey());
 
                     }
                 }
+                isAvailable();
+                sortingList();
                 mAdapter = new ReedemAdapter(voucher_name, points);
                 recycle.setAdapter(mAdapter);
+                loading.cancel();
                 mAdapter.setOnRedeemClickListener(new ReedemAdapter.OnRedeemClick() {
                     @Override
                     public void reedem(int i) {
-                        final int index=i;
+
+                        final int index = i;
                         AlertDialog.Builder b = new AlertDialog.Builder(redeem.this.getContext());
-                        b.setMessage("After confirmation "+points.get(i)+" points will deduct from your account");
+                        b.setMessage("After confirmation " + points.get(i) + " points will deduct from your account");
                         b.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                                String str="";
-                                for(String s:already_redeem) {
-                                    str+=s+",";
-                                }
-                                Log.e("Balance=", String.valueOf(wallet_balance) );
-                                str+=redeem_keys.get(index)+",";
-                                int redeem_price=points.get(index);
+                                int redeem_price = points.get(index);
                                 try {
+                                    already_redeem.add(redeem_keys.get(index));
                                     if (wallet_balance - redeem_price < 0) {
                                         toast("Insufficient Balance");
                                     } else {
-                                        mdbUser.child(user_key).child("userPoints").setValue(String.valueOf(wallet_balance - redeem_price));
-                                        mdbUser.child(user_key).child("userRedeem").setValue(str);
-                                        wallet_balance-=redeem_price;
-                                        mAdapter.updateData(index);
 
+                                        String str = "";
+                                        for (String s : already_redeem) {
+                                            str += s + ",";
+                                        }
+                                        Log.e("Balance=", String.valueOf(wallet_balance));
+                                        //str += redeem_keys.get(index) + ",";
+                                        wallet_balance -= redeem_price;
+                                        mdbUser.child(user_key).child("userPoints").setValue(String.valueOf(wallet_balance));
+                                        mdbUser.child(user_key).child("userRedeem").setValue(str);
+                                        mAdapter.updateData(index);
+                                        redeem_keys.remove(index);
                                         toast("Coupon Succesfully Redeem");
+                                        isAvailable();
+
 
                                         /*points.remove(index);
                                         already_redeem.remove(index);
@@ -218,12 +260,10 @@ public class redeem extends Fragment {
 
                                     }
 
-                                }
-                                catch (Exception e) {
-                                    toast("Something Went Wrong");
+                                } catch (Exception e) {
+                                    toast("Something Went Wrong"+e.toString());
                                 }
                                 //ENTER YOUR DATABASE RELATED CODE HERE
-
 
 
                             }
@@ -231,7 +271,9 @@ public class redeem extends Fragment {
                         b.setNegativeButton("Cancel", null);
                         b.show();
 
+
                     }
+
                 });
             }
 

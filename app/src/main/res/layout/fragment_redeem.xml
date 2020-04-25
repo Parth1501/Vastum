@@ -1,18 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".redeem"
+    android:id="@+id/redeem_refresh">
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".redeem"
+
     android:id="@+id/redeemRelative">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/redeem_recycle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/nav"
+        android:layout_marginBottom="7dp"
 
 
         />
+    <TextView
+        android:id="@+id/available"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="20dp"
+        android:text="You Have Redeem All the Coupons!!!"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
