@@ -321,7 +321,7 @@ public class sell extends Fragment {
                 .setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        deleteFolder();
+                        //deleteFolder();
                         dialogInterface.dismiss();
                     }
                 })
@@ -404,7 +404,7 @@ public class sell extends Fragment {
     public void sellSuccessful() {
 
         uploadcount=0;
-        for(Uri u1 : mImageUri){
+        for(int i=0;i<mImageUri.size();i++){
             final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
             final int imageNumber = pref.getBoolean("NotFirstTime", false) ? (new Random()).nextInt(Integer.MAX_VALUE) : 1;
             if (imageNumber == 1) {
@@ -414,7 +414,7 @@ public class sell extends Fragment {
 //                pro d.setProductImageUri(mImageUri.toString());
             final StorageReference mFileRef = stReff.child("img" + imageNumber + ".jpeg");
 
-            mFileRef.putFile(u1).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            mFileRef.putFile(mImageUri.get(0)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
 
@@ -438,13 +438,14 @@ public class sell extends Fragment {
                         prod.setProductFirstImageURI(downloadUri.toString());
                     }
                     prod.setProductImageUri(downloadUri.toString());
-                    loading.cancel();
+                    mImageUri.remove(0);
                     Toast.makeText(getContext(), uploadcount + " Images Uploaded ", Toast.LENGTH_SHORT).show();
+                    loading.cancel();
                 }
             });
 
         }
-        mImageUri.clear();
+
         mdbProd.child(prod.getProductID()).setValue(prod);
 
         mdbUser.addListenerForSingleValueEvent(new ValueEventListener() {
