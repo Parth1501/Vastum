@@ -1,7 +1,7 @@
 package com.example.vastum;
 
 public class usersInfo {
-    String userPoints,userSoldProduct,userID;
+    String userPoints,userSoldProduct,userID,userRedeem;
 
     public usersInfo(){
 
@@ -11,12 +11,22 @@ public class usersInfo {
         userID = uID;
         userPoints="";
         userSoldProduct="";
+        userRedeem="";
     }
 
-    public usersInfo(String userPoints, String userSoldProduct, String userID) {
+    public usersInfo(String userPoints, String userSoldProduct, String userID,String userRedeem) {
         this.userPoints = userPoints;
         this.userSoldProduct = userSoldProduct;
         this.userID = userID;
+        this.userRedeem=userRedeem;
+    }
+
+    public String getUserRedeem() {
+        return userRedeem;
+    }
+
+    public void setUserRedeem(String userRedeem) {
+        this.userRedeem = userRedeem;
     }
 
     public String getUserPoints() {

@@ -1,5 +1,6 @@
 package com.example.vastum;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -82,6 +83,7 @@ public class HomeProductInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view=inflater.inflate(R.layout.fragment_home_product_info, container, false);
         final Bundle b=this.getArguments();
         final View newView = view;

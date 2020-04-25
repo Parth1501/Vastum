@@ -1,5 +1,6 @@
 package com.example.vastum;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.media.tv.TvContentRating;
 import android.os.Bundle;
@@ -84,6 +85,7 @@ public class home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         view=inflater.inflate(R.layout.fragment_home, container, false);
         my_recycler_view=view.findViewById(R.id.RecyclerItems);
         dbCategories = FirebaseDatabase.getInstance().getReference().child("Category");
@@ -92,6 +94,7 @@ public class home extends Fragment {
         allSampleData = new ArrayList<ProductsSectionsModel>();
         CreateList();
         BuildRecyclerView();
+
         return view;
     }
 
@@ -99,12 +102,14 @@ public class home extends Fragment {
         dbCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ProgressDialog loading = ProgressDialog.show(getContext(), "Fetching", "Please Wait");
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
                     Categories+=","+ds.getKey();
                     Log.e("THE KEYS",ds.getKey());
                 }
                 CreateSeparateLists();
                 Log.e("HE EE ",Categories);
+                loading.cancel();
             }
 
             @Override
@@ -119,6 +124,7 @@ public class home extends Fragment {
     private void  CreateSeparateLists(){
         final String[] DiffCategory = Categories.split(",");
         dbProd.addListenerForSingleValueEvent(new ValueEventListener() {
+            ProgressDialog loading = ProgressDialog.show(getContext(), "Fetching Items", "Please Wait");
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (String Category : DiffCategory) {
@@ -139,6 +145,7 @@ public class home extends Fragment {
 
                 }
                 adapter.notifyDataSetChanged();
+                loading.cancel();
             }
 
             @Override
@@ -149,7 +156,6 @@ public class home extends Fragment {
     }
 
     private void BuildRecyclerView() {
-
         my_recycler_view.setHasFixedSize(true);
         adapter = new ProductsSectionAdapter( allSampleData,this.getContext());
         my_recycler_view.setLayoutManager(new LinearLayoutManager(this.getContext(),LinearLayoutManager.VERTICAL,false));

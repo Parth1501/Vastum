@@ -14,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -63,8 +64,6 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
-
         getIntentKey = getIntent().getIntExtra("Flag", 10);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -158,22 +157,28 @@ public class Main2Activity extends AppCompatActivity {
         }
 
         mLocationCallback = new LocationCallback() {
+
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null) {
+
                     return;
                 }
+
                 for (Location location : locationResult.getLocations()) {
+
                     if (getApplicationContext() != null) {
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         //System.out.println(latLng);
 
                         Geocoder myLocation = new Geocoder(getApplicationContext(), Locale.getDefault());
                         try {
+
                             List<Address> myList = myLocation.getFromLocation(latLng.latitude, latLng.longitude, 1);
                             Address address = myList.get(0);
                             address.getLocality();
                             currentLocation.setText(address.getLocality());
+
                         } catch (IOException e) {
                             e.printStackTrace();
                             System.out.println(e.toString());
@@ -181,9 +186,15 @@ public class Main2Activity extends AppCompatActivity {
 
                     }
                 }
+
                 mFusedLocationClient.requestLocationUpdates(mlocationRequest, mLocationCallback, Looper.myLooper());
+
             }
+
+
         };
+
+
     }
 
 

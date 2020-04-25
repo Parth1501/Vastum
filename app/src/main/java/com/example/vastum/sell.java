@@ -315,7 +315,7 @@ public class sell extends Fragment {
         View view = inflater.inflate(R.layout.show_sell_points,null);
         textPoints = view.findViewById(R.id.textPoints);
         textPoints.setText(checkPoints());
-        toast(stReff.toString());
+
         builder.setView(view)
                 .setTitle("Points")
                 .setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
