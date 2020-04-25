@@ -42,6 +42,11 @@ public class ReedemAdapter extends RecyclerView.Adapter<ReedemAdapter.ReedemHold
         reedemHolder.voucher_name_view.setText(voucher_name.get(i));
         reedemHolder.points_view.setText(points.get(i).toString());
     }
+    public void updateData(int index) {
+        points.remove(index);
+        voucher_name.remove(index);
+        notifyItemRemoved(index);
+    }
 
     @Override
     public int getItemCount() {
@@ -58,7 +63,6 @@ public class ReedemAdapter extends RecyclerView.Adapter<ReedemAdapter.ReedemHold
             voucher_name_view=itemView.findViewById(R.id.voucher_name);
             points_view=itemView.findViewById(R.id.value);
             redeem_btn=itemView.findViewById(R.id.redeem_button);
-
             redeem_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
