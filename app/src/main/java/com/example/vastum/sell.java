@@ -402,7 +402,6 @@ public class sell extends Fragment {
     }
 
     public void sellSuccessful() {
-
         uploadcount=0;
         for(Uri u1 : mImageUri){
             final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
@@ -453,9 +452,10 @@ public class sell extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
                     if(ds.child("userID").getValue().toString().equals(mAuth.getCurrentUser().getUid())){
-                       setUserProducts(ds.getKey().toString(),  ds.child("userSoldProduct").getValue().toString());
+                       setUserProducts(ds.getKey().toString(),  ds.child("userSoldProduct").getValue().toString(),ds.child("userPoints").getValue().toString());
                     }
                 }
+                prod = new ProductsInfo(mdbProd.push().getKey());
             }
 
             @Override
@@ -466,8 +466,11 @@ public class sell extends Fragment {
         imgCapture.setImageDrawable(getResources().getDrawable(R.drawable.image_add));
     }
 
-    private void setUserProducts(String Uid,String Prod){
+    private void setUserProducts(String Uid,String Prod,String Points){
         mdbUser.child(Uid).child("userSoldProduct").setValue(Prod+","+prod.getProductID());
+        String value = Integer.toString(Integer.parseInt(Points)+Integer.parseInt(prod.getProductPoints()));
+        mdbUser.child(Uid).child("userPoints").setValue(value);
+        ((Main2Activity)getContext()).setWalletText(value);
     }
 
 

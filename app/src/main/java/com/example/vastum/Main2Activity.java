@@ -88,13 +88,23 @@ public class Main2Activity extends AppCompatActivity {
 
         DatabaseReference mdbUser;
         mdbUser= FirebaseDatabase.getInstance().getReference().child("UserInfo");
+        wallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Main2Activity.this,AccountDetailActivity.class));
+            }
+        });
+        if (mAuth.getCurrentUser() == null) {
+            startActivity(new Intent(this, LoginAcitivity.class));
+            finish();
+        }
         mdbUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.child("userID").getValue().toString().equals(user.getUid())) {
                         System.out.println(Integer.parseInt(ds.child("userPoints").getValue().toString()));
-                        wallet.setText("Rs "+ds.child("userPoints").getValue().toString());
+                        setWalletText("SP "+ds.child("userPoints").getValue().toString());
 
                     }
 
@@ -107,16 +117,7 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
-        wallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Main2Activity.this,AccountDetailActivity.class));
-            }
-        });
-        if (mAuth.getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginAcitivity.class));
-            finish();
-        }
+
 
         bnv = findViewById(R.id.nav);
 
@@ -168,6 +169,11 @@ public class Main2Activity extends AppCompatActivity {
         });
         location();
 
+    }
+
+    public void setWalletText(String value){
+        TextView wallet=findViewById(R.id.walletbalance);
+        wallet.setText(value);
     }
 
     private void location() {
