@@ -7,13 +7,16 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -87,6 +90,16 @@ public class home extends Fragment {
         // Inflate the layout for this fragment
 
         view=inflater.inflate(R.layout.fragment_home, container, false);
+        SwipeRefreshLayout refresh=view.findViewById(R.id.refresh);
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                FragmentManager fm=((Main2Activity) getContext()).getSupportFragmentManager();
+                Fragment curr=fm.findFragmentByTag("home");
+                fm.beginTransaction().detach(curr).attach(curr).commit();
+                Toast.makeText(getContext(),"refreshed",Toast.LENGTH_SHORT).show();
+            }
+        });
         my_recycler_view=view.findViewById(R.id.RecyclerItems);
         dbCategories = FirebaseDatabase.getInstance().getReference().child("Category");
         dbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
