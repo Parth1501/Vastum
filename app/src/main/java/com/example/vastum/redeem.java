@@ -179,7 +179,9 @@ public class redeem extends Fragment {
         if (points.size() == 0) {
             TextView t = getView().findViewById(R.id.available);
             t.setVisibility(View.VISIBLE);
+            loading.cancel();
         }
+
     }
     private void sortingList() {
         int size=points.size();
