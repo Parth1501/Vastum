@@ -40,6 +40,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,6 +56,7 @@ public class Main2Activity extends AppCompatActivity {
     private TextView name, email, number, currentLocation;
     String str = "";
     FirebaseAuth mAuth;
+    FirebaseUser user;
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -58,6 +64,7 @@ public class Main2Activity extends AppCompatActivity {
     private LocationRequest mlocationRequest;
     public Fragment active,fr1,fr2,fr3,fr4;
     BottomNavigationView bnv;
+
     int backcnt=0;
     FragmentManager fm;
     @Override
@@ -70,12 +77,36 @@ public class Main2Activity extends AppCompatActivity {
         currentLocation = findViewById(R.id.Location);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser usera = mAuth.getCurrentUser();
+
+        user= FirebaseAuth.getInstance().getCurrentUser();
 
         Toolbar tb = (Toolbar) findViewById(R.id.inc1);
         setSupportActionBar(tb);
 
-        TextView wallet=findViewById(R.id.walletbalance);
+        final TextView wallet=findViewById(R.id.walletbalance);
+
+        DatabaseReference mdbUser;
+        mdbUser= FirebaseDatabase.getInstance().getReference().child("UserInfo");
+        mdbUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("userID").getValue().toString().equals(user.getUid())) {
+                        System.out.println(Integer.parseInt(ds.child("userPoints").getValue().toString()));
+                        wallet.setText("Rs "+ds.child("userPoints").getValue().toString());
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         wallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

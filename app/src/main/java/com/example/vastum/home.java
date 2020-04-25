@@ -136,7 +136,7 @@ public class home extends Fragment {
 
     private void  CreateSeparateLists(){
         final String[] DiffCategory = Categories.split(",");
-        dbProd.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbProd.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (String Category : DiffCategory) {
