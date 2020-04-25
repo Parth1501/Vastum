@@ -122,13 +122,15 @@ public class home extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (String Category : DiffCategory) {
-                    if(!Category.equals("")){
+                    if(!Category.equals("") ){
+                        int count =5;
                         ProductsSectionsModel model = new ProductsSectionsModel();
                         model.setHeaderTitle(Category);
                         tvPartList = new ArrayList<>();
                         for (DataSnapshot ds : dataSnapshot.getChildren()){
-                            if(ds.child("productCategory").getValue(String.class).equals(Category)){
+                            if(ds.child("productCategory").getValue(String.class).equals(Category) && count !=0){
                                 tvPartList.add(ds.getValue(ProductsInfo.class));
+                                count--;
                             }
                         }
                         model.setAllItemsInSection(tvPartList);

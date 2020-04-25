@@ -404,7 +404,7 @@ public class sell extends Fragment {
     public void sellSuccessful() {
 
         uploadcount=0;
-        for(int i=0;i<mImageUri.size();i++){
+        for(Uri u1 : mImageUri){
             final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
             final int imageNumber = pref.getBoolean("NotFirstTime", false) ? (new Random()).nextInt(Integer.MAX_VALUE) : 1;
             if (imageNumber == 1) {
@@ -414,7 +414,7 @@ public class sell extends Fragment {
 //                pro d.setProductImageUri(mImageUri.toString());
             final StorageReference mFileRef = stReff.child("img" + imageNumber + ".jpeg");
 
-            mFileRef.putFile(mImageUri.get(0)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            mFileRef.putFile(u1).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
 
