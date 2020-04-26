@@ -102,9 +102,14 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.child("userID").getValue().toString().equals(user.getUid())) {
-                        System.out.println(Integer.parseInt(ds.child("userPoints").getValue().toString()));
-                        setWalletText("SP "+ds.child("userPoints").getValue().toString());
+                    try {
+                        if (ds.child("userID").getValue().toString().equals(user.getUid())) {
+                            System.out.println(Integer.parseInt(ds.child("userPoints").getValue().toString()));
+                            setWalletText("SP " + ds.child("userPoints").getValue().toString());
+
+                        }
+                    }
+                    catch (Exception e) {
 
                     }
 

@@ -1,19 +1,31 @@
 package com.example.vastum;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,6 +46,10 @@ public class profile extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private String str[]={"Account Details","Ordered Details","Log Out"};
+    private int img[]={R.drawable.account,R.drawable.order,R.drawable.logout};
+    private ListView list;
 
     public profile() {
         // Required empty public constructor
@@ -71,8 +87,40 @@ public class profile extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_profile, container, false);
-        orderdetails = view.findViewById(R.id.Order_details);
-        logoutButton = view.findViewById(R.id.ProfileLogoutButton);
+        userName=view.findViewById(R.id.UserName);
+        userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        list=view.findViewById(R.id.profile_list);
+        //ArrayAdapter<Integer> adapter_img=new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1);
+
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,str);
+        //ArrayAdapter last=new ArrayAdapter(getContext(),android.R.layout.simple_list_item_1);
+       // last.add(adapter);
+       // last.add(adapter_img);
+        MyAdapter myAdapter=new MyAdapter();
+        list.setAdapter(myAdapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        startActivity(new Intent(getContext(),AccountDetailActivity.class));
+                        break;
+                    case 1:
+                        startActivity(new Intent(profile.this.getContext(), ordersdetails.class));
+                        break;
+                    case 2:
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(profile.this.getContext(), LoginAcitivity.class));
+                        getActivity().getSupportFragmentManager().popBackStack();
+                        break;
+
+                }
+            }
+        });
+
+
+
+        /*logoutButton = view.findViewById(R.id.ProfileLogoutButton);
         userName = view.findViewById(R.id.UserName);
         relativeLayout= view.findViewById(R.id.profileRelative);
         accountdetails=view.findViewById(R.id.Account_Details);
@@ -98,7 +146,36 @@ public class profile extends Fragment {
                 startActivity(new Intent(profile.this.getContext(), LoginAcitivity.class));
                 getActivity().getSupportFragmentManager().popBackStack();
             }
-        });
+        });*/
+
         return view;
+    }
+    class MyAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return img.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v=getLayoutInflater().inflate(R.layout.profile_list_view,null);
+            ImageView i=v.findViewById(R.id.profile_image);
+            TextView t=v.findViewById(R.id.profile_text);
+            i.setImageResource(img[position]);
+            t.setText(str[position]);
+
+            return v;
+        }
     }
 }

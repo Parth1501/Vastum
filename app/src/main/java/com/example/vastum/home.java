@@ -95,9 +95,11 @@ public class home extends Fragment {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
                 FragmentManager fm=((Main2Activity) getContext()).getSupportFragmentManager();
                 Fragment curr=fm.findFragmentByTag("home");
                 fm.beginTransaction().detach(curr).attach(curr).commit();
+
                 Toast.makeText(getContext(),"refreshed",Toast.LENGTH_SHORT).show();
             }
         });
@@ -136,7 +138,7 @@ public class home extends Fragment {
 
     private void  CreateSeparateLists(){
         final String[] DiffCategory = Categories.split(",");
-        dbProd.addValueEventListener(new ValueEventListener() {
+        dbProd.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (String Category : DiffCategory) {

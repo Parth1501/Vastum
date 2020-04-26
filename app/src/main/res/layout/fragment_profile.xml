@@ -2,54 +2,74 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileRelative"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".profile"
-    android:id="@+id/profileRelative">
+    tools:context=".profile">
 
-    <TextView
-        android:id="@+id/UserName"
-        android:layout_width="186dp"
-        android:layout_height="74dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:textColor="@android:color/black"
-        android:textSize="30dp" />
+    <LinearLayout
+        android:id="@+id/upper_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/Account_Details"
+        <TextView
+            android:id="@+id/UserName"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="25dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/UserName"
-        android:elevation="10dp"
-        android:text="Account Details"
-        android:textColor="@android:color/black"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:layout_below="@id/upper_layout"
+        android:layout_marginTop="15dp">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Order Details"
-        android:textSize="20dp"
-        android:layout_below="@id/Account_Details"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:layout_centerInParent="true"
-        android:elevation="10dp"
-        android:id="@+id/Order_details"/>
+      <!--  <Button
+            android:id="@+id/Account_Details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/UserName"
+            android:elevation="10dp"
+            android:text="Account Details"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/Order_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Account_Details"
+            android:layout_centerInParent="true"
+            android:elevation="10dp"
+            android:text="Order Details"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
 
-    <Button
-        android:id="@+id/ProfileLogoutButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Order_details"
-        android:elevation="10dp"
-        android:text="Logout"
-        android:textColor="@android:color/black"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/ProfileLogoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Order_details"
+            android:elevation="10dp"
+            android:text="Logout"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:textStyle="bold" /> -->
+
+        <ListView
+            android:id="@+id/profile_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </RelativeLayout>
