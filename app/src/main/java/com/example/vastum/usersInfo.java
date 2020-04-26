@@ -9,7 +9,7 @@ public class usersInfo {
 
     public usersInfo(String uID){
         userID = uID;
-        userPoints="";
+        userPoints="0";
         userSoldProduct="";
         userRedeem="";
     }
