@@ -153,16 +153,14 @@ public class sell extends Fragment {
         editor.putBoolean("NotFirstTime",false);
         editor.commit();
 
-        prod = new ProductsInfo(mdbProd.push().getKey());
+        //prod = new ProductsInfo(mdbProd.push().getKey());
 
 
 
         spinnerfillup();
 
 
-        editor.putString("productID",prod.getProductID());
-        editor.commit();
-        stReff = FirebaseStorage.getInstance().getReference().child(prod.getProductID());
+
 
         imgCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,12 +301,7 @@ public class sell extends Fragment {
         //sellPointsDialog.setPoints(checkPoints());
         //sellPointsDialog.show(this.getContext()getParentFragmentManager(),"sellPointsDialog");
 
-        prod.setProductCategory(category.getSelectedItem().toString());
-        prod.setProductBrand(brand.getSelectedItem().toString());
-        prod.setProductAge(age.getSelectedItem().toString());
-        prod.setProductType(type.getSelectedItem().toString());
-        prod.setProductName(type.getSelectedItem().toString() +" "+ category.getSelectedItem().toString());
-        prod.setProductPoints(checkPoints());
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -402,7 +395,18 @@ public class sell extends Fragment {
     }
 
     public void sellSuccessful() {
+        SharedPreferences.Editor editor = pref.edit();
+        prod = new ProductsInfo(mdbProd.push().getKey());
         uploadcount=0;
+        prod.setProductCategory(category.getSelectedItem().toString());
+        prod.setProductBrand(brand.getSelectedItem().toString());
+        prod.setProductAge(age.getSelectedItem().toString());
+        prod.setProductType(type.getSelectedItem().toString());
+        prod.setProductName(type.getSelectedItem().toString() +" "+ category.getSelectedItem().toString());
+        prod.setProductPoints(checkPoints());
+        stReff = FirebaseStorage.getInstance().getReference().child(prod.getProductID());
+        editor.putString("productID",prod.getProductID());
+        editor.commit();
         for(Uri u1 : mImageUri){
             final ProgressDialog loading = ProgressDialog.show(getContext(), "Uploading Item", "Please Wait");
             final int imageNumber = pref.getBoolean("NotFirstTime", false) ? (new Random()).nextInt(Integer.MAX_VALUE) : 1;
@@ -438,6 +442,7 @@ public class sell extends Fragment {
                     }
                     prod.setProductImageUri(downloadUri.toString());
                     mImageUri.remove(0);
+                    if(mImageUri.size()==0) mdbProd.child(prod.getProductID()).setValue(prod);
                     Toast.makeText(getContext(), uploadcount + " Images Uploaded ", Toast.LENGTH_SHORT).show();
                     loading.cancel();
                 }
@@ -445,7 +450,6 @@ public class sell extends Fragment {
 
         }
 
-        mdbProd.child(prod.getProductID()).setValue(prod);
 
         mdbUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -455,7 +459,6 @@ public class sell extends Fragment {
                        setUserProducts(ds.getKey().toString(),  ds.child("userSoldProduct").getValue().toString(),ds.child("userPoints").getValue().toString());
                     }
                 }
-                prod = new ProductsInfo(mdbProd.push().getKey());
             }
 
             @Override

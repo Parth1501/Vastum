@@ -47,6 +47,7 @@ public class home extends Fragment {
     private StorageReference stRef;
     private ProductsSectionAdapter adapter;
     View view;
+    int setlist=0;
     Context context;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -92,14 +93,17 @@ public class home extends Fragment {
 
         view=inflater.inflate(R.layout.fragment_home, container, false);
         SwipeRefreshLayout refresh=view.findViewById(R.id.refresh);
-        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        if(setlist==0) {
+            setlist=1;
+            allSampleData = new ArrayList<ProductsSectionsModel>();
+        }refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 FragmentManager fm=((Main2Activity) getContext()).getSupportFragmentManager();
                 Fragment curr=fm.findFragmentByTag("home");
-                fm.beginTransaction().detach(curr).attach(curr).commit();
-
+                fm.beginTransaction().remove(curr).commit();
+                fm.beginTransaction().add(R.id.homehost,new home(),"home").commit();
+                //fm.beginTransaction().detach(curr).attach(curr).commit();
                 Toast.makeText(getContext(),"refreshed",Toast.LENGTH_SHORT).show();
             }
         });
@@ -107,7 +111,6 @@ public class home extends Fragment {
         dbCategories = FirebaseDatabase.getInstance().getReference().child("Category");
         dbProd = FirebaseDatabase.getInstance().getReference().child("productsForSell");
         stRef = FirebaseStorage.getInstance().getReference();
-        allSampleData = new ArrayList<ProductsSectionsModel>();
         loading = ProgressDialog.show(getContext(), "Fetching", "Please Wait");
         CreateList();
         BuildRecyclerView();
@@ -147,7 +150,10 @@ public class home extends Fragment {
                         ProductsSectionsModel model = new ProductsSectionsModel();
                         model.setHeaderTitle(Category);
                         tvPartList = new ArrayList<>();
-                        for (DataSnapshot ds : dataSnapshot.getChildren()){
+                        ArrayList<DataSnapshot> temp=new ArrayList<DataSnapshot>();
+                        for (DataSnapshot ds :  dataSnapshot.getChildren())
+                            temp.add(0,ds);
+                        for(DataSnapshot ds: temp){
                             if(ds.child("productCategory").getValue(String.class).equals(Category) && count !=0){
                                 tvPartList.add(ds.getValue(ProductsInfo.class));
                                 count--;
