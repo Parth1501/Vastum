@@ -172,6 +172,7 @@ public class sell extends Fragment {
         buttonCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 showPoints();
             }
         });

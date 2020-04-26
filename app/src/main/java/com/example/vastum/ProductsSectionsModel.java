@@ -14,6 +14,7 @@ public class ProductsSectionsModel {
         this.allItemsInSection = allItemsInSection;
     }
 
+
     public String getHeaderTitle() {
         return headerTitle;
     }

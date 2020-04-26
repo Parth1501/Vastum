@@ -23,6 +23,7 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
     private Context context;
     private ArrayList<ProductsInfo> mList;
     private OnItemClickListener mListener;
+    private boolean flag=false;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
@@ -42,22 +43,25 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
         holder.textView1.setText(currentItem.getProductName());
         Glide.with(context).load(currentItem.getProductFirstImageURI()).into(holder.imageView);
         Log.e("THE IMAGE",currentItem.getProductFirstImageURI()+" ");
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm=((Main2Activity) v.getContext()).getSupportFragmentManager();
-                Fragment old=fm.findFragmentByTag("category");
-                if(old==null) {
-                    old=fm.findFragmentByTag("home");
+        if(flag) holder.v.setClickable(false);
+        else {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fm = ((Main2Activity) v.getContext()).getSupportFragmentManager();
+                    Fragment old = fm.findFragmentByTag("category");
+                    if (old == null) {
+                        old = fm.findFragmentByTag("home");
+                    }
+                    Fragment nfrag = new HomeProductInfoFragment();
+                    fm.beginTransaction().hide(old).commit();
+                    Bundle b = new Bundle();
+                    b.putString("product id", currentItem.getProductID());
+                    nfrag.setArguments(b);
+                    fm.beginTransaction().add(R.id.homehost, nfrag, "hpf").commit();
                 }
-                Fragment nfrag=new HomeProductInfoFragment();
-                fm.beginTransaction().hide(old).commit();
-                Bundle b=new Bundle();
-                b.putString("product id",currentItem.getProductID());
-                nfrag.setArguments(b);
-                fm.beginTransaction().add(R.id.homehost,nfrag,"hpf").commit();
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -72,12 +76,12 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
     public static class itemViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView textView1;
-
-
+        public View v;
         public itemViewHolder(@NonNull View itemView, final OnItemClickListener mListener) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
             textView1 = itemView.findViewById(R.id.textView1);
+            this.v=itemView;
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -94,6 +98,11 @@ public class TVitemAdapter extends RecyclerView.Adapter<TVitemAdapter.itemViewHo
     public TVitemAdapter(ArrayList<ProductsInfo> itemList, Context context){
         mList  = itemList;
         this.context = context;
+    }
+    public TVitemAdapter(ArrayList<ProductsInfo> itemList, Context context,boolean flag){
+        mList  = itemList;
+        this.context = context;
+        this.flag=flag;
     }
 
 }
